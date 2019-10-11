@@ -1,4 +1,6 @@
 # zombie-smash
+IMPORTANT: If you don't open this as an actual text file, the tables will be unreadable. Hit Open Raw or Edit on github to see this file as intended. 
+
 Design a game project, working title Zombie Smash.
 In this game, you are an expert zombie hunter who is killing vast numbers of zombies. There will be several levels where wave after wave of zombies appear around you. The game has a top-down view with WASD controls to move, Q and E to rotate, and the spacebar to attack. The game can be played as multiplayer, in which case a second character will be on screen. The screen will not be split. The second character uses arrowkey controls to move, / and shift to rotate, and CTRL or COMMAND to attack. If players are playing multiplayer, spawn twice as many zombies per level and average the luck stats of the two players to determine the drop rate. If a player dies, they cannot play for the rest of the level. If all players die, the players lose the game. If there are two players, they CAN damage each other. The game should have all its essential data saved in a cookie so you can pick up where you left off if you close your browser. 
 
