@@ -14,7 +14,8 @@ The zombies each have 100+2*level HP. When a zombie hits, it is VeRy important t
 
 
 
-Research screen: 
+Research/shop screen: 
+Player 1's reserach screen will be displayed first. When they click done, Player 2's will be displayed, if there is a player 2. The research shop is navigated by mouse. 
 Research must be purchased sequentially. Only the next upgrade need be displayed on the screen. 
 The research screen will have the following upgrades:
 
