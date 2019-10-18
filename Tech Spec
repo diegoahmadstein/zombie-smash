@@ -1,0 +1,45 @@
+*if during playtesting the game is too easy or impossible, change the numbers a bit
+
+Zombies:
+have zombies use the given sprite
+for every frame check the if position of the zombie overlaps with a player
+      if yes, then subtract the damage of the zombie from the hp of the player every 2 seconds
+      if no, add zombie speed to position in direction of player position
+Spawn by creating new object like the meteors from spaceship
+pick random position on map to spawn
+
+Also check if a player bullet or melee weapon is overlapping with the zombie, and if so subtract the damage from the health
+if a zombie's health reaches 0 or below, play the given sfx and turn the zombie red for 2 frame before removing it
+when a zombie dies, randomly determine based on 10% chance whether dna drop boolean true
+if true then make smaller object appear where zombie died that will increment player DNA count upon collision and disappear
+      when player purchases luck upgrades, change drop chance as specified
+
+Head Honcho:
+spawn zombie, but with specified changes to numbers
+every 10 seconds randomly check to spawn 5 zombies around head HONCHO
+    if yes, spawn 5 zombies with positions that are slightly changed from head honcho's current position
+when head honcho health reaches 0 or below, set all other zombie health to 0
+    end the game with a win screen adapted from loss screen of spaceship game
+
+Player:
+For movement take controls from the spaceship for turning, and just adapt from forward movement to make strafing also possible
+The bullet attack can also be taken from the spaceship program
+sword attacks will extend out in a cone for 1 frame when attack is pressed
+flamethrower will extend in a cone as long as the attack button is held down, decrementing ammo
+these movement methods can be adapted to all entities, zombies and players alike, to keep it simple
+player death(s) = loss screen from spaceship game
+
+Achievements:
+when menu key pressed, set speed of all active objects to 0 and create text with menu options
+    use a clear color for text
+find online how to implement clicking
+    when achievements clicked from menu bring up a list of achievements that are a different color when completed
+keep variables that increment based on what player does
+when variables reach certain number it will turn boolean achievement unlocked to true
+when boolean becomes true, show text in top right corner: "(achievement name) Unlocked!"
+
+Research screen:
+When wave ends, bring up research screen based on concept sketch
+use the clicking implemented above
+with each purchased thing add to player
+*this may take a long while to program and idk how to implement it
