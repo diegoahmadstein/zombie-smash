@@ -11,7 +11,9 @@ var GAME = {
 var PLAYER_CHARACTER = {
   initialized : false,
   latest : {
-    x : 0,
-    y : 0
+    x : 50,
+    y : 50,
+    v: 0,
+    a: .06,
   }
 };

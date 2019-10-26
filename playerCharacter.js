@@ -1,16 +1,17 @@
 // Populate a global variable for the spaceship
-function InitializePC() {
+function initializePC() {
   var canvas = document.getElementById('mainCanvas');
   var context = canvas.getContext('2d');
   context.scale(1,1);
 
-  var pcImage = new Image();
-  pcImage.src = "character 1 face.png";
+
 
 
   PLAYER_CHARACTER = {
     x : 300,
     y : 150,
+    v: 0,
+    a: .06,
     rotation : 0,
     health : 3,
     positions : [
