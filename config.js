@@ -16,5 +16,10 @@ var PLAYER_CHARACTER = {
     v: 0,
     a: .06,
   },
-
+    dna: 0,
+    strength: 1,
+    speed: 1,
+    hp: 100,
+    luck: 10,
+    weapon: club,
 };
