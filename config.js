@@ -15,5 +15,6 @@ var PLAYER_CHARACTER = {
     y : 50,
     v: 0,
     a: .06,
-  }
+  },
+
 };

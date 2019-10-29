@@ -10,16 +10,16 @@ var CONTROLS = {
 
 document.addEventListener('keydown', function(event) {
   switch (event.key) {
-    case "ArrowUp":
+    case "w":
       CONTROLS.playerCharacter.forward = true;
       break;
-    case "ArrowDown":
+    case "s":
       CONTROLS.playerCharacter.backward = true;
       break;
-    case "ArrowLeft":
+    case "a":
       CONTROLS.playerCharacter.rotateCounterClockwise = true;
       break;
-    case "ArrowRight":
+    case "d":
       CONTROLS.playerCharacter.rotateClockwise = true;
       break;
     default:
@@ -30,16 +30,16 @@ document.addEventListener('keydown', function(event) {
 
 document.addEventListener('keyup', function(event) {
   switch (event.key) {
-    case "ArrowUp":
+    case "w":
       CONTROLS.playerCharacter.forward = false;
       break;
-    case "ArrowDown":
+    case "s":
       CONTROLS.playerCharacter.backward = false;
       break;
-    case "ArrowLeft":
+    case "a":
       CONTROLS.playerCharacter.rotateCounterClockwise = false;
       break;
-    case "ArrowRight":
+    case "d":
       CONTROLS.playerCharacter.rotateClockwise = false;
       break;
     default:
