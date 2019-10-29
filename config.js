@@ -7,6 +7,15 @@ var GAME = {
   level : 1
 };
 
+var WEAPON = {
+  Katana:
+  Handgun:
+  Flamethrower:
+  Semiautomatic:
+  Sniper:
+  Excalibur:
+}
+
 
 var PLAYER_CHARACTER = {
   initialized : false,
@@ -21,5 +30,7 @@ var PLAYER_CHARACTER = {
     speed: 1,
     hp: 100,
     luck: 10,
-    weapon: club,
+    weapon1:
+    weapon2:
+    weapon3:
 };

@@ -12,6 +12,12 @@ function initializePC() {
     y : 150,
     v: 0,
     a: .06,
+    dna: 0,
+    strength: 1,
+    speed: 1,
+    hp: 100,
+    luck: 10,
+    weapon: [],
     rotation : 0,
     health : 3,
     positions : [
