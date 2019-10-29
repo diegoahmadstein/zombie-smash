@@ -3,7 +3,8 @@ var CONTROLS = {
     forward : false,
     back : false,
     rotateClockwise : false,
-    rotateCounterClockwise : false
+    rotateCounterClockwise : false,
+    pickWeapon: false
   }
 
 };
@@ -21,6 +22,9 @@ document.addEventListener('keydown', function(event) {
       break;
     case "d":
       CONTROLS.playerCharacter.rotateClockwise = true;
+      break;
+    case "p":
+      CONTROLS.playerCharacter.pickWeapon = true;
       break;
     default:
       break;
@@ -42,6 +46,8 @@ document.addEventListener('keyup', function(event) {
     case "d":
       CONTROLS.playerCharacter.rotateClockwise = false;
       break;
+    case "p":
+      CONTROLS.playerCharacter.pickWeapon = false;
     default:
       break;
   }
