@@ -25,6 +25,7 @@ var PLAYER_CHARACTER = {
     v: 0,
     a: .06,
   },
+<<<<<<< HEAD
     dna: 0,
     strength: 1,
     speed: 1,
@@ -33,4 +34,7 @@ var PLAYER_CHARACTER = {
     //weapon1:
   /*  weapon2:
     weapon3:*/
+=======
+
+>>>>>>> parent of aa74bb0... added all the stats
 };
