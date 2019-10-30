@@ -23,9 +23,9 @@ document.addEventListener('keydown', function(event) {
     case "d":
       CONTROLS.playerCharacter.rotateClockwise = true;
       break;
-    case "p":
+  /*  case "p":
       CONTROLS.playerCharacter.pickWeapon = true;
-      break;
+      break;*/
     default:
       break;
   }
@@ -46,8 +46,9 @@ document.addEventListener('keyup', function(event) {
     case "d":
       CONTROLS.playerCharacter.rotateClockwise = false;
       break;
-    case "p":
+  /*  case "p":
       CONTROLS.playerCharacter.pickWeapon = false;
+      break;*/
     default:
       break;
   }

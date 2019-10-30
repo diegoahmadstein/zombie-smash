@@ -8,13 +8,13 @@ var GAME = {
 };
 
 var WEAPON = {
-  Katana:
-  Handgun:
+//  Katana:
+/*  Handgun:
   Flamethrower:
   Semiautomatic:
   Sniper:
-  Excalibur:
-}
+  Excalibur:*/
+};
 
 
 var PLAYER_CHARACTER = {
@@ -30,7 +30,7 @@ var PLAYER_CHARACTER = {
     speed: 1,
     hp: 100,
     luck: 10,
-    weapon1:
-    weapon2:
-    weapon3:
+    //weapon1:
+  /*  weapon2:
+    weapon3:*/
 };
