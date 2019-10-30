@@ -17,7 +17,6 @@ function initializePC() {
     speed: 1,
     hp: 100,
     luck: 10,
-    weapon: [],
     rotation : 0,
     health : 3,
     positions : [
