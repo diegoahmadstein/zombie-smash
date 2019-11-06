@@ -13,6 +13,8 @@ var GAME = {
 
 var PLAYER_CHARACTER = {
   initialized : false,
+    x: 300, //MEASURES FROM CENTER OF PLAYER
+    y: 150, //MEASURES FROM CENTER OF PLAYER
     dna: 0,
     strength: 1,
     speed: 2,
@@ -33,3 +35,5 @@ var WEAPONS = [
   {name: "Sniper", class: "ranged", cooldown: 60, clipSize: 5, ammoOwned: 0, ammoLeftInClip: 0, damage: 100*Math.sqrt(PLAYER_CHARACTER.strength), knockback: 40, reload: 60},
   {name: "Excalibur", class: "melee", cooldown: 30, clipSize: -1, ammoOwned: -1, ammoLeftInClip: -1, damage: 100*PLAYER_CHARACTER.strength*PLAYER_CHARACTER.strength , knockback: 20}
 ];
+
+var ZOMBIES = [];
