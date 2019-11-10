@@ -7,6 +7,7 @@ var CONTROLS = {
     rotateClockwise: false,
     rotateCounterClockwise: false,
     pickWeapon: false,
+    attack: false
   }
 
 };
@@ -34,6 +35,9 @@ document.addEventListener('keydown', function(event) {
     case "p":
       CONTROLS.playerCharacter.pickWeapon = true;
       break;
+    case " ":
+        CONTROLS.playerCharacter.attack = true;
+        break;
     default:
       break;
   }
@@ -63,6 +67,9 @@ document.addEventListener('keyup', function(event) {
     case "p":
       CONTROLS.playerCharacter.pickWeapon = false;
       break;
+      case " ":
+        CONTROLS.playerCharacter.attack = false;
+        break;
     default:
       break;
   }

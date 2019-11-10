@@ -6,10 +6,10 @@ Day 2:	Make sure the PC has a DNA counter, as well as his 4 stats, 3 weapon slot
 Day 3:	Write the code for the weapons, which each have a class, a cooldown, a clip size, an ammo owned, an ammo left in clip, and a formula for their damage.
 Day 4:	Catch up on the first 3 days. Display the player's HP, DNAcount, ammo left in clip, and ammo owned on screen, as well as the picture of the current weapon. (see concept sketch).
 Day 5: 	Create a level variable and set it at 1 for now. Create the zombieArray, add zombies as specified on line 30 randomly over time as specified on line 97.
-Day 6:	Continue yesterday's work. Now make the zombies move towards the player.
-Day 7:	Write an attack() function which uses the PC's currently indicated weapon and performs its attack so long as the weapon isn't on cooldown and has ammo left in its clip. Decrement the health of any zombies hit by the appropriate amount.
-Day 8:	Continue the attack function work. Then make the zombies attack the player if they are touching him (and not on cooldown).
-Day 9:	Make sure that players die when their health is zero and zombies die (and are removed from zombieArray) when their health is zero. When a zombie dies, make it have a Luck% chance to drop DNA at the location where it died. Make sure that when a player walks over a DNA, it disappears and his DNA count is incremented.
+Day 6:	Continue yesterday's work. Now make the zombies move towards the player. Write an attack() function which uses the PC's currently indicated weapon and performs its attack so long as the weapon isn't on cooldown and has ammo left in its clip. Decrement the health of any zombies hit by the appropriate amount.
+Day 7:	Give each weapon ammo. Have weapons not fire if they have no ammo left in clip. Create a reload key (r) that refills the clip and takes the weapon's appropriate ammount of time to reload. 
+Day 8:	Make the zombies hurt the player if they are touching him (and not on cooldown). Have being hit by a weapon knock a zombie back by that weapon's knockback worth of distance.
+Day 9:	Make sure that players die when their health is zero. When a zombie dies, make it have a Luck% chance to drop DNA at the location where it died (note that there are currently 2 different places in the code where it checks if a zombie has died. One in handleZombieAnimation and one in handleBulletAnimation). Make sure that when a player walks over a DNA, it disappears and his DNA count is incremented.
 Day 10: Once all zombies are dead or the player is dead, end the level. If the player is dead, the game ends. Else, if all the zombies are dead, it's time for THE SHOP.
 Day 11: Continue writing the shop, as described on line 36. Make sure a player can choose which weapons they bring with them into combat (if they have more than 3)
 Day 12: When the player clicks a button to leave the shop, increment the level count and put the player back on screen to kill some more zombies.

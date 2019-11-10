@@ -1,7 +1,9 @@
-var wSwitchCooldown = 0;
-var zombieCooldown = 0;
+var wSwitchCooldown = 0; //reset to 30 when you switch weapons. decrememented each frame.
+var zombieCooldown = 0; //will be set to an amount equal to 7200 / #zombies that are supposed to spawn this level. decrememented each frame.
+var aCooldown=0; //will be reset to the cooldown of the current weapon whenever its used. decrememnted each frame
 
 function handleZombieAnimation() {
+  //creates new zombies in empty spaces.
   if (zombieCooldown <= 0 && GAME.levelTime > 0) {
     zombieCooldown = 7200 / GAME.zombiesInc;
     var a;
@@ -30,38 +32,54 @@ function handleZombieAnimation() {
   }
   GAME.levelTime--;
   zombieCooldown--;
-  for (zombie of ZOMBIES) {
-    var y = zombie.y + 10 - PLAYER_CHARACTER.y;
-    var x = zombie.x + 10 - PLAYER_CHARACTER.x;
-    zombie.y -= 1 * (y / Math.sqrt((x * x) + (y * y)));
-    zombie.x -= 1 * (x / Math.sqrt((x * x) + (y * y)));
+
+//checks if zombies should be dead, removes them if so
+  for (var i = 0; i<ZOMBIES.length; i++){
+    if (ZOMBIES[i].hp<=0){
+      ZOMBIES.splice(i,1);
+      i--;
+    }
+  }
+
+  //moves all zombies closer to the player
+  for (var i = 0; i<ZOMBIES.length; i++) {
+    var y = ZOMBIES[i].y + 10 - PLAYER_CHARACTER.y;
+    var x = ZOMBIES[i].x + 10 - PLAYER_CHARACTER.x;
+    ZOMBIES[i].y -= 1 * (y / Math.sqrt((x * x) + (y * y)));
+    ZOMBIES[i].x -= 1 * (x / Math.sqrt((x * x) + (y * y)));
+
+    //this next part exists to check if the zombie just moved into the same space as another zombie or player, and undoes the move if so.
     var justSmashed = false;
-    if (PLAYER_CHARACTER.x - 13 < zombie.x + 20 && PLAYER_CHARACTER.x + 13 >= zombie.x && PLAYER_CHARACTER.y - 13 <= zombie.y + 20 && PLAYER_CHARACTER.y + 13 > zombie.y) {
+    if (PLAYER_CHARACTER.x - 13 < ZOMBIES[i].x + 20 && PLAYER_CHARACTER.x + 13 >= ZOMBIES[i].x && PLAYER_CHARACTER.y - 13 <= ZOMBIES[i].y + 20 && PLAYER_CHARACTER.y + 13 > ZOMBIES[i].y) {
       justSmashed = true;
     }
     for (otherZombie of ZOMBIES) {
-      if (zombie != otherZombie && otherZombie.x < zombie.x + 20 && otherZombie.x + 20 > zombie.x && otherZombie.y < zombie.y + 20 && otherZombie.y + 20 > zombie.y) {
+      if (ZOMBIES[i] != otherZombie && otherZombie.x < ZOMBIES[i].x + 20 && otherZombie.x + 20 > ZOMBIES[i].x && otherZombie.y < ZOMBIES[i].y + 20 && otherZombie.y + 20 > ZOMBIES[i].y) {
         justSmashed = true;
       }
     }
     if (justSmashed) {
-      zombie.y += 1 * (y / Math.sqrt((x * x) + (y * y)));
-      zombie.x += 1 * (x / Math.sqrt((x * x) + (y * y)));
+      ZOMBIES[i].y += 1 * (y / Math.sqrt((x * x) + (y * y)));
+      ZOMBIES[i].x += 1 * (x / Math.sqrt((x * x) + (y * y)));
     }
   }
 }
 
 function handlePCAnimation() {
-
+//these if statements handle the movement for the player if their respective buttons are being pressed.
+//they have a similar failsafe to zombies that prevents them from moving the player into a space occupied by a zombie.
   if (CONTROLS.playerCharacter.rotateCounterClockwise) {
     PLAYER_CHARACTER.theta -= Math.sqrt(PLAYER_CHARACTER.speed) * Math.PI / 60;
+    if (PLAYER_CHARACTER.theta<0){
+      PLAYER_CHARACTER.theta += (2*Math.PI);
+    }
   }
   if (CONTROLS.playerCharacter.rotateClockwise) {
     PLAYER_CHARACTER.theta += Math.sqrt(PLAYER_CHARACTER.speed) * Math.PI / 60;
+    PLAYER_CHARACTER.theta = PLAYER_CHARACTER.theta % (2*Math.PI);
   }
   if (CONTROLS.playerCharacter.up) {
-    PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed * Math.cos(PLAYER_CHARACTER.theta);
-    PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+    PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed;
     var justSmashed = false;
     for (zombie of ZOMBIES) {
       if (PLAYER_CHARACTER.x - 13 < zombie.x + 20 && PLAYER_CHARACTER.x + 13 > zombie.x && PLAYER_CHARACTER.y - 13 < zombie.y + 20 && PLAYER_CHARACTER.y + 13 > zombie.y) {
@@ -69,13 +87,12 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
-      PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed * Math.cos(PLAYER_CHARACTER.theta);
-      PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+      PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
+      //PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
   }
   if (CONTROLS.playerCharacter.down) {
-    PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed * Math.cos(PLAYER_CHARACTER.theta);
-    PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+    PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed;
     var justSmashed = false;
     for (zombie of ZOMBIES) {
       if (PLAYER_CHARACTER.x - 13 < zombie.x + 20 && PLAYER_CHARACTER.x + 13 > zombie.x && PLAYER_CHARACTER.y - 13 < zombie.y + 20 && PLAYER_CHARACTER.y + 13 > zombie.y) {
@@ -83,13 +100,12 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
-      PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed * Math.cos(PLAYER_CHARACTER.theta);
-      PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+      PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
+      //PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
   }
   if (CONTROLS.playerCharacter.left) {
-    PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed * Math.cos(PLAYER_CHARACTER.theta);
-    PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+    PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed;
     var justSmashed = false;
     for (zombie of ZOMBIES) {
       if (PLAYER_CHARACTER.x - 13 < zombie.x + 20 && PLAYER_CHARACTER.x + 13 > zombie.x && PLAYER_CHARACTER.y - 13 < zombie.y + 20 && PLAYER_CHARACTER.y + 13 > zombie.y) {
@@ -98,13 +114,12 @@ function handlePCAnimation() {
     }
     if (justSmashed) {
 
-      PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed * Math.cos(PLAYER_CHARACTER.theta);
-      PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+      PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
+    //  PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
   }
   if (CONTROLS.playerCharacter.right) {
-    PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed * Math.cos(PLAYER_CHARACTER.theta);
-    PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+    PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed;
     var justSmashed = false;
     for (zombie of ZOMBIES) {
       if (PLAYER_CHARACTER.x - 13 < zombie.x + 20 && PLAYER_CHARACTER.x + 13 > zombie.x && PLAYER_CHARACTER.y - 13 < zombie.y + 20 && PLAYER_CHARACTER.y + 13 > zombie.y) {
@@ -112,9 +127,14 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
-      PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed * Math.cos(PLAYER_CHARACTER.theta);
-      PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+      PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed// * Math.cos(PLAYER_CHARACTER.theta);
+      //PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
+  }
+  //player may only attack if weapon isn't on cooldown
+  if (CONTROLS.playerCharacter.attack&&aCooldown<=0) {
+    aCooldown= WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].cooldown; //resets cooldown
+    attack();
   }
 
 
@@ -133,8 +153,50 @@ function handlePCAnimation() {
   }
 }
 
+function handleBulletAnimation() {
+  aCooldown--; //decrements attack cooldown
+  for (var i = 0; i < BULLETS.length; i++) {
+    //moves the bullet
+    BULLETS[i].x += (BULLETS[i].speed) * Math.cos(BULLETS[i].angle);
+    BULLETS[i].y += (BULLETS[i].speed) * Math.sin(BULLETS[i].angle);
+
+    //detects collisions, decrements zombies hp if hit, removes bullet if its not piercing type
+    for (var j = 0; j < ZOMBIES.length; j++) {
+      if (BULLETS[i].x >= ZOMBIES[j].x && BULLETS[i].x <= ZOMBIES[j].x + 20 && BULLETS[i].y >= ZOMBIES[j].y && BULLETS[i].y < +ZOMBIES[j].y + 20) {
+        ZOMBIES[j].hp -= BULLETS[i].damage;
+        if (ZOMBIES[j].hp<=0){
+          ZOMBIES.splice(j, 1);
+          j--;
+        }
+        if (!BULLETS[i].pierces) {
+          j = ZOMBIES.length;
+          BULLETS.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+  }
+
+  //removes bullets that have gone off screen to save memory
+  for (var i = 0; i < BULLETS.length; i++) {
+    if (BULLETS[i].x < 0) {
+      BULLETS.splice(i, 1);
+      i--;    }
+    else if (BULLETS[i].x > GAME.canvas.width) {
+      BULLETS.splice(i, 1);
+      i--;    }
+    else if (BULLETS[i].y < 0) {
+      BULLETS.splice(i, 1);
+      i--;    }
+    else if (BULLETS[i].y > GAME.canvas.height ) {
+      BULLETS.splice(i, 1);
+      i--;    }
+  }
+}
 
 function RenderZombies(context) {
+  //draws every zombie
   var canvas = document.getElementById('mainCanvas');
   var zomImage = new Image();
   zomImage.src = 'Sprites\\zombie head.jpg';
@@ -147,8 +209,35 @@ function RenderPC(context) {
   var canvas = document.getElementById('mainCanvas');
   var pcImage = new Image();
   pcImage.src = 'Sprites\\character 1 face.png';
+  //this is where the flamethrower flames are drawn. theyre here cuz im lazy and i wanted them to be under the player and the weapon but didnt want to write another function
+  if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 3 && CONTROLS.playerCharacter.attack){
+    var lowerRange = PLAYER_CHARACTER.theta -(WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].angle*Math.PI/180);
+    var upperRange =PLAYER_CHARACTER.theta+(WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].angle*Math.PI/180);
+    var rand = Math.random();
+    if (rand<.2){context.fillStyle = "#FF0000";}
+    else if (rand<.4){context.fillStyle = "#FF5a00";}
+    else if (rand<.6){context.fillStyle = "#FF9a00";}
+    else if (rand<.8){context.fillStyle = "#FFce00";}
+    else {context.fillStyle = "#FFe808";}
+    context.beginPath()
+    context.moveTo(PLAYER_CHARACTER.x, PLAYER_CHARACTER.y);
+    context.lineTo(PLAYER_CHARACTER.x + (150*Math.cos(lowerRange)), PLAYER_CHARACTER.y + (150*Math.sin(lowerRange)));
+    context.arc(PLAYER_CHARACTER.x, PLAYER_CHARACTER.y, 150, lowerRange, upperRange, false);
+    context.lineTo(PLAYER_CHARACTER.x, PLAYER_CHARACTER.y);
+    context.fill();
+    context.fillStyle = "#000000";
+  }
+//this draws the player
   drawRotatedImage(context, pcImage, PLAYER_CHARACTER.x, PLAYER_CHARACTER.y, 26, 26, PLAYER_CHARACTER.theta);
 
+}
+
+function RenderBullets(context){
+  //draws all the bullets
+  var canvas = document.getElementById('mainCanvas');
+  for (bullet of BULLETS) {
+     context.fillRect(bullet.x, bullet.y, 2, 2);
+  }
 }
 
 function drawRotatedImage(context, image, x, y, width, height, angle) {
@@ -165,6 +254,7 @@ function RenderWeapon(context) {
   var canvas = document.getElementById('mainCanvas');
   var weaponImage = new Image();
 
+//why is this where weapon switching happens? who tf knows
   if (wSwitchCooldown <= 0 && CONTROLS.playerCharacter.pickWeapon) {
     PLAYER_CHARACTER.wepOn++;
     if (PLAYER_CHARACTER.wepOn == 3) {
@@ -173,6 +263,8 @@ function RenderWeapon(context) {
     wSwitchCooldown = 30;
   }
   wSwitchCooldown--;
+
+  //this part decided which weapon picture to show on the screen
   if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 0) {
     weaponImage.src = 'Sprites\\club.png';
   } else if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 6) {
@@ -188,9 +280,13 @@ function RenderWeapon(context) {
   } else if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 5) {
     weaponImage.src = 'Sprites\\sniperrifle.png';
   }
+  //draws weapon in topleft
   context.drawImage(weaponImage, 87, 2, 15, 15);
+
+  //draws the player's weapon
   drawRotatedImage(context, weaponImage, PLAYER_CHARACTER.x + 15 * Math.cos(PLAYER_CHARACTER.theta), PLAYER_CHARACTER.y + 15 * Math.sin(PLAYER_CHARACTER.theta), 20, 20, PLAYER_CHARACTER.theta);
-}
+  }
+
 
 function runGame() {
   var canvas = document.getElementById('mainCanvas');
@@ -202,6 +298,7 @@ function runGame() {
     if (GAME.levelTime != 0 || ZOMBIES.length > 0) {
       // 1 - Reposition the objects
       handlePCAnimation();
+      handleBulletAnimation();
       handleZombieAnimation();
       // 2 - Clear the CANVAS
       context.clearRect(0, 0, 600, 300);
@@ -210,14 +307,17 @@ function runGame() {
       RenderPC(context);
       RenderWeapon(context);
       RenderZombies(context);
+      RenderBullets(context);
       context.font = "10px Arial";
+
+      //this stuff writes all the stats in the topleft
       if (WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].clipSize == -1) {
         context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna + "       ∞/∞", 10, 15);
       } else {
         context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna + "         " + WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoLeftInClip + "/" + WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoOwned, 10, 15);
       }
 
-    } else {
+    } else {//currently there's no way to hit this
       context.font = "30px Arial";
       context.fillText("Game Over      Level " + GAME.level, 135, 200);
     }
