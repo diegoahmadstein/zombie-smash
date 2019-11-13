@@ -41,6 +41,14 @@ function handleZombieAnimation() {
       i--;
     }
   }
+//if the bullet is on the zombie decrease the health
+  for (var i = 0; i < ZOMBIES.length; i++){
+    for (bullet of BULLETS) {
+      if (ZOMBIES[i].x + 20 < bullet.x && ZOMBIES[i].x - 20 > bullet.x && ZOMBIES[i].y + 20 < bullet.y && ZOMBIES[i].y - 20 > bullet.y ){
+        ZOMBIES[i].hp -= WEAPONS[weapons[wepOn]].damage;
+      }
+    }
+  }
 
   //moves all zombies closer to the player
   for (var i = 0; i<ZOMBIES.length; i++) {
