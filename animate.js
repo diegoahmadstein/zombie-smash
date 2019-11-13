@@ -50,6 +50,15 @@ function handleZombieAnimation() {
     }
   }
 
+//if the zombie hits the player decrease pc health
+  for (var i = 0; i < ZOMBIES.length; i++){
+
+      if (ZOMBIES[i].x + 20 < bullet.x && ZOMBIES[i].x - 20 > bullet.x && ZOMBIES[i].y + 20 < bullet.y && ZOMBIES[i].y - 20 > bullet.y ){
+        ZOMBIES[i].hp -= WEAPONS[weapons[wepOn]].damage;
+      }
+
+  }
+
   //moves all zombies closer to the player
   for (var i = 0; i<ZOMBIES.length; i++) {
     var y = ZOMBIES[i].y + 10 - PLAYER_CHARACTER.y;
@@ -165,6 +174,8 @@ function handlePCAnimation() {
   if (PLAYER_CHARACTER.y > GAME.canvas.height - 13) {
     PLAYER_CHARACTER.y = 287;
   }
+
+
 }
 
 function handleBulletAnimation() {
