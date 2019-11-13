@@ -7,7 +7,8 @@ var CONTROLS = {
     rotateClockwise: false,
     rotateCounterClockwise: false,
     pickWeapon: false,
-    attack: false
+    attack: false,
+    reload : false
   }
 
 };
@@ -36,8 +37,11 @@ document.addEventListener('keydown', function(event) {
       CONTROLS.playerCharacter.pickWeapon = true;
       break;
     case " ":
-        CONTROLS.playerCharacter.attack = true;
-        break;
+      CONTROLS.playerCharacter.attack = true;
+      break;
+    case "r":
+      CONTROLS.playerCharacter.reload = true;
+      break;
     default:
       break;
   }
@@ -67,9 +71,12 @@ document.addEventListener('keyup', function(event) {
     case "p":
       CONTROLS.playerCharacter.pickWeapon = false;
       break;
-      case " ":
-        CONTROLS.playerCharacter.attack = false;
-        break;
+    case " ":
+      CONTROLS.playerCharacter.attack = false;
+      break;
+    case "r":
+      CONTROLS.playerCharacter.reload = false;
+      break;
     default:
       break;
   }

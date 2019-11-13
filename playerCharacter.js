@@ -24,7 +24,7 @@ function initializePC() {
 function attack() {
   var weapon = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]];
 
-  //melee weapon stuff. warning: very confusing. if you need to touch this stuff, ask diego to explain it. 
+  //melee weapon stuff. warning: very confusing. if you need to touch this stuff, ask diego to explain it.
   if (weapon.class == "melee") {
     for (zombie of ZOMBIES){
       var xDis = zombie.x+10 -PLAYER_CHARACTER.x;
@@ -68,5 +68,14 @@ function attack() {
       pierces: pierces,
       angle: PLAYER_CHARACTER.theta
     });
+  }
+}
+
+
+//this reloads your weapon, takes from ammoOwned and refills ammoLeftInClip
+function reload(){
+  if (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned>=WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].clipSize-WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip){
+    WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned-=WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].clipSize-WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip;
+    WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip=WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].clipSize;
   }
 }

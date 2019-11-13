@@ -30,10 +30,10 @@ var PLAYER_CHARACTER = {
 var WEAPONS = [
   {name: "Club", class: "melee", cooldown: 60, angle: 45, clipSize: -1, ammoOwned: -1, ammoLeftInClip: -1, damage: 25*PLAYER_CHARACTER.strength, knockback: 20},
   {name: "Katana", class : "melee", cooldown: 42, angle: 50, clipSize: -1, ammoOwned: -1, ammoLeftInClip: -1, damage: 30*PLAYER_CHARACTER.strength, knockback: 20},
-  {name: "Handgun", class: "ranged", bulletSpeed: 10, cooldown: 30, clipSize: 10, ammoOwned: 0, ammoLeftInClip: 0, damage: 35*Math.sqrt(PLAYER_CHARACTER.strength), knockback: 0, reload: 120},
-  {name: "Flamethrower", class: "melee", cooldown: 1, angle: 22.5, clipSize: 500, ammoOwned: 0, ammoLeftInClip: 0, damage: 2*Math.sqrt(PLAYER_CHARACTER.strength), knockback: 0, reload: 120},
-  {name: "Semiautomatic", class: "ranged", bulletSpeed: 10, cooldown: 6, clipSize: 100, ammoOwned: 0, ammoLeftInClip: 0, damage: 20*Math.sqrt(PLAYER_CHARACTER.strength), knockback: 0, reload: 120},
-  {name: "Sniper", class: "ranged", cooldown: 60, bulletSpeed: 15, clipSize: 5, ammoOwned: 0, ammoLeftInClip: 0, damage: 102*Math.sqrt(PLAYER_CHARACTER.strength), knockback: 40, reload: 60},
+  {name: "Handgun", class: "ranged", bulletSpeed: 10, cooldown: 30, clipSize: 10, ammoOwned: 100, ammoLeftInClip: 0, damage: 35*Math.sqrt(PLAYER_CHARACTER.strength), knockback: 0, reload: 120},
+  {name: "Flamethrower", class: "melee", cooldown: 1, angle: 22.5, clipSize: 500, ammoOwned: 1000, ammoLeftInClip: 0, damage: 2*Math.sqrt(PLAYER_CHARACTER.strength), knockback: 0, reload: 120},
+  {name: "Semiautomatic", class: "ranged", bulletSpeed: 10, cooldown: 6, clipSize: 100, ammoOwned: 500, ammoLeftInClip: 0, damage: 20*Math.sqrt(PLAYER_CHARACTER.strength), knockback: 0, reload: 120},
+  {name: "Sniper", class: "ranged", cooldown: 60, bulletSpeed: 15, clipSize: 5, ammoOwned: 25, ammoLeftInClip: 0, damage: 102*Math.sqrt(PLAYER_CHARACTER.strength), knockback: 40, reload: 60},
   {name: "Excalibur", class: "melee", cooldown: 30, angle: 67.5, clipSize: -1, ammoOwned: -1, ammoLeftInClip: -1, damage: 102*PLAYER_CHARACTER.strength*PLAYER_CHARACTER.strength , knockback: 20}
 ];
 

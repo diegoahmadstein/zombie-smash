@@ -1,6 +1,7 @@
 var wSwitchCooldown = 0; //reset to 30 when you switch weapons. decrememented each frame.
 var zombieCooldown = 0; //will be set to an amount equal to 7200 / #zombies that are supposed to spawn this level. decrememented each frame.
-var aCooldown=0; //will be reset to the cooldown of the current weapon whenever its used. decrememnted each frame
+var aCooldown=0; //will be reset to the cooldown of the current weapon whenever its used. decrememnted each frame in handleBulletAnimation
+var rCooldown=0; //will be reset to the reloadtime of the weapon. decremented each frame in handleBulletAnimation
 
 function handleZombieAnimation() {
   //creates new zombies in empty spaces.
@@ -131,12 +132,17 @@ function handlePCAnimation() {
       //PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
   }
-  //player may only attack if weapon isn't on cooldown
-  if (CONTROLS.playerCharacter.attack&&aCooldown<=0) {
-    aCooldown= WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].cooldown; //resets cooldown
+  //player may only attack if weapon isn't on cooldown, and if they aren't currently reloading.
+  if (CONTROLS.playerCharacter.attack&&aCooldown<=0&&rCooldown<=0&&WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip!=0) {
+    aCooldown= WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].cooldown;//resets cooldown
+    WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip--;
     attack();
   }
-
+  //player can reload only if they aren't currently reloading
+  if (CONTROLS.playerCharacter.reload&&rCooldown<=0){
+     rCooldown = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].reload;
+     reload();
+  }
 
   // Check if player is leaving the boundary, if so, stop it
   if (PLAYER_CHARACTER.x < 13) {
@@ -155,6 +161,7 @@ function handlePCAnimation() {
 
 function handleBulletAnimation() {
   aCooldown--; //decrements attack cooldown
+  rCooldown--; //decrements reload time
   for (var i = 0; i < BULLETS.length; i++) {
     //moves the bullet
     BULLETS[i].x += (BULLETS[i].speed) * Math.cos(BULLETS[i].angle);
@@ -210,7 +217,7 @@ function RenderPC(context) {
   var pcImage = new Image();
   pcImage.src = 'Sprites\\character 1 face.png';
   //this is where the flamethrower flames are drawn. theyre here cuz im lazy and i wanted them to be under the player and the weapon but didnt want to write another function
-  if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 3 && CONTROLS.playerCharacter.attack){
+  if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 3 && CONTROLS.playerCharacter.attack&&aCooldown<=0&&rCooldown<=0&&WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip!=0){
     var lowerRange = PLAYER_CHARACTER.theta -(WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].angle*Math.PI/180);
     var upperRange =PLAYER_CHARACTER.theta+(WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].angle*Math.PI/180);
     var rand = Math.random();
