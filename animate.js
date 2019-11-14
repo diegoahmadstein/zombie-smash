@@ -42,11 +42,13 @@ function handleZombieAnimation() {
       i--;
     }
   }
-//if the bullet is on the zombie decrease the health
+//if the bullet is on the zombie decrease the health and knockback
   for (var i = 0; i < ZOMBIES.length; i++){
     for (bullet of BULLETS) {
       if (ZOMBIES[i].x + 20 < bullet.x && ZOMBIES[i].x > bullet.x && ZOMBIES[i].y + 20 < bullet.y && ZOMBIES[i].y > bullet.y ){
         ZOMBIES[i].hp -= WEAPONS[weapons[wepOn]].damage;
+        ZOMBIES[i].x += Math.cos(BULLETS[i].angle)*WEAPONS[weapons[wepOn]].knockback;
+        ZOMBIES[i].y += Math.sin(BULLETS[i].angle)*WEAPONS[weapons[wepOn]].knockback;
       }
     }
   }
