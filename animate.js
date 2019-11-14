@@ -2,9 +2,10 @@ var wSwitchCooldown = 0; //reset to 30 when you switch weapons. decrememented ea
 var zombieCooldown = 0; //will be set to an amount equal to 7200 / #zombies that are supposed to spawn this level. decrememented each frame.
 var aCooldown=0; //will be reset to the cooldown of the current weapon whenever its used. decrememnted each frame in handleBulletAnimation
 var rCooldown=0; //will be reset to the reloadtime of the weapon. decremented each frame in handleBulletAnimation
-
+var hitCoolDown = 2;
 function handleZombieAnimation() {
   //creates new zombies in empty spaces.
+  hitCoolDown -= .025;
   if (zombieCooldown <= 0 && GAME.levelTime > 0) {
     zombieCooldown = 7200 / GAME.zombiesInc;
     var a;
@@ -44,20 +45,13 @@ function handleZombieAnimation() {
 //if the bullet is on the zombie decrease the health
   for (var i = 0; i < ZOMBIES.length; i++){
     for (bullet of BULLETS) {
-      if (ZOMBIES[i].x + 20 < bullet.x && ZOMBIES[i].x - 20 > bullet.x && ZOMBIES[i].y + 20 < bullet.y && ZOMBIES[i].y - 20 > bullet.y ){
+      if (ZOMBIES[i].x + 20 < bullet.x && ZOMBIES[i].x > bullet.x && ZOMBIES[i].y + 20 < bullet.y && ZOMBIES[i].y > bullet.y ){
         ZOMBIES[i].hp -= WEAPONS[weapons[wepOn]].damage;
       }
     }
   }
 
-//if the zombie hits the player decrease pc health
-  for (var i = 0; i < ZOMBIES.length; i++){
 
-      if (ZOMBIES[i].x + 20 < bullet.x && ZOMBIES[i].x - 20 > bullet.x && ZOMBIES[i].y + 20 < bullet.y && ZOMBIES[i].y - 20 > bullet.y ){
-        ZOMBIES[i].hp -= WEAPONS[weapons[wepOn]].damage;
-      }
-
-  }
 
   //moves all zombies closer to the player
   for (var i = 0; i<ZOMBIES.length; i++) {
@@ -77,6 +71,10 @@ function handleZombieAnimation() {
       }
     }
     if (justSmashed) {
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       ZOMBIES[i].y += 1 * (y / Math.sqrt((x * x) + (y * y)));
       ZOMBIES[i].x += 1 * (x / Math.sqrt((x * x) + (y * y)));
     }
@@ -105,6 +103,10 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
       //PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
@@ -118,6 +120,10 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
       //PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
@@ -131,7 +137,10 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
-
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
     //  PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
@@ -145,8 +154,13 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed// * Math.cos(PLAYER_CHARACTER.theta);
       //PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+
     }
   }
   //player may only attack if weapon isn't on cooldown, and if they aren't currently reloading.
