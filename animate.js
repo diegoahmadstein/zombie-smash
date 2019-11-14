@@ -40,6 +40,8 @@ function handleZombieAnimation() {
     if (ZOMBIES[i].hp<=0){
       ZOMBIES.splice(i,1);
       i--;
+      // luck for dropping DNA
+      
     }
   }
 //if the bullet is on the zombie decrease the health and knockback
@@ -51,6 +53,9 @@ function handleZombieAnimation() {
         ZOMBIES[i].y += Math.sin(BULLETS[i].angle)*WEAPONS[weapons[wepOn]].knockback;
       }
     }
+
+
+
   }
 
 
@@ -191,6 +196,9 @@ function handlePCAnimation() {
     PLAYER_CHARACTER.y = 287;
   }
 
+  if (PLAYER_CHARACTER.hp <= 0){
+    GAME.started = false;
+  }
 
 }
 
