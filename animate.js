@@ -39,7 +39,7 @@ function handleZombieAnimation() {
   for (var i = 0; i<ZOMBIES.length; i++){
     if (ZOMBIES[i].hp<=0){
       var luckNum = (Math.random()*99) + 1;
-      if (luckNum < 100){//PLAYER_CHARACTER.luck){
+      if (luckNum < PLAYER_CHARACTER.luck){
         DNA.push({
           x: ZOMBIES[i].x,
           y: ZOMBIES[i].y
@@ -231,7 +231,7 @@ function handleBulletAnimation() {
         ZOMBIES[j].hp -= BULLETS[i].damage;
         if (ZOMBIES[j].hp<=0){
           var luckNum = (Math.random()*99) + 1;
-          if (luckNum < 100){//PLAYER_CHARACTER.luck){
+          if (luckNum < PLAYER_CHARACTER.luck){
             DNA.push({
               x: ZOMBIES[j].x,
               y: ZOMBIES[j].y
