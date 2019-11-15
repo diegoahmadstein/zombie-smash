@@ -39,7 +39,7 @@ function handleZombieAnimation() {
   for (var i = 0; i<ZOMBIES.length; i++){
     if (ZOMBIES[i].hp<=0){
       var luckNum = (Math.random()*99) + 1;
-      if (luckNum < PLAYER_CHARACTER.luck){
+      if (luckNum < 100){//PLAYER_CHARACTER.luck){
         DNA.push({
           x: ZOMBIES[i].x,
           y: ZOMBIES[i].y
@@ -206,6 +206,15 @@ function handlePCAnimation() {
     GAME.started = false;
   }
 
+
+  //checks if pc picks up dna
+  for (var i = 0; i < DNA.length; i ++){
+    if (PLAYER_CHARACTER.x+ 20 > DNA[i].x && PLAYER_CHARACTER.x < DNA[i].x + 20
+      && PLAYER_CHARACTER.y+ 20 > DNA[i].y && PLAYER_CHARACTER.y < DNA[i].y+ 20){
+        PLAYER_CHARACTER.dna ++;
+        DNA.splice(i,1);
+      }
+  }
 }
 
 function handleBulletAnimation() {
@@ -222,7 +231,7 @@ function handleBulletAnimation() {
         ZOMBIES[j].hp -= BULLETS[i].damage;
         if (ZOMBIES[j].hp<=0){
           var luckNum = (Math.random()*99) + 1;
-          if (luckNum < PLAYER_CHARACTER.luck){
+          if (luckNum < 100){//PLAYER_CHARACTER.luck){
             DNA.push({
               x: ZOMBIES[j].x,
               y: ZOMBIES[j].y
