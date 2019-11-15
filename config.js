@@ -41,6 +41,6 @@ var WEAPONS = [
 //zombie positions measure from top left corner. DIFFERENT FROM PLAYER
 var ZOMBIES = [];
 //holds dna
-var DNA[];
+var DNA= [];
 //holds all the bullets
 var BULLETS = [];

@@ -38,16 +38,16 @@ function handleZombieAnimation() {
 //checks if zombies should be dead, removes them if so
   for (var i = 0; i<ZOMBIES.length; i++){
     if (ZOMBIES[i].hp<=0){
-      ZOMBIES.splice(i,1);
-      i--;
       var luckNum = (Math.random()*99) + 1;
-      if (luckNum < PLAYER_CHARACTER.luck){
+      if (luckNum < 100){//PLAYER_CHARACTER.luck){
         DNA.push({
           x: ZOMBIES[i].x,
           y: ZOMBIES[i].y
         });
       }
-
+      ZOMBIES.splice(i,1);
+      i--;
+    }
 
   }
 //if the bullet is on the zombie decrease the health and knockback
@@ -221,15 +221,15 @@ function handleBulletAnimation() {
       if (BULLETS[i].x >= ZOMBIES[j].x && BULLETS[i].x <= ZOMBIES[j].x + 20 && BULLETS[i].y >= ZOMBIES[j].y && BULLETS[i].y < +ZOMBIES[j].y + 20) {
         ZOMBIES[j].hp -= BULLETS[i].damage;
         if (ZOMBIES[j].hp<=0){
-          ZOMBIES.splice(j, 1);
-          j--;
           var luckNum = (Math.random()*99) + 1;
-          if (luckNum < PLAYER_CHARACTER.luck){
+          if (luckNum < 100){//PLAYER_CHARACTER.luck){
             DNA.push({
-              x: ZOMBIES[i].x,
-              y: ZOMBIES[i].y
+              x: ZOMBIES[j].x,
+              y: ZOMBIES[j].y
             });
           }
+          ZOMBIES.splice(j, 1);
+          j--;
         }
         if (!BULLETS[i].pierces) {
           j = ZOMBIES.length;
@@ -350,6 +350,12 @@ function RenderWeapon(context) {
   drawRotatedImage(context, weaponImage, PLAYER_CHARACTER.x + 15 * Math.cos(PLAYER_CHARACTER.theta), PLAYER_CHARACTER.y + 15 * Math.sin(PLAYER_CHARACTER.theta), 20, 20, PLAYER_CHARACTER.theta);
   }
 
+  function RenderDNA(context){
+    for (dna of DNA){
+      context.fillRect(dna.x,dna.y,10,10);
+    }
+
+  }
 
 function runGame() {
   var canvas = document.getElementById('mainCanvas');
@@ -371,6 +377,7 @@ function runGame() {
       RenderWeapon(context);
       RenderZombies(context);
       RenderBullets(context);
+      RenderDNA(context);
       context.font = "10px Arial";
 
       //this stuff writes all the stats in the topleft
