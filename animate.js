@@ -40,9 +40,15 @@ function handleZombieAnimation() {
     if (ZOMBIES[i].hp<=0){
       ZOMBIES.splice(i,1);
       i--;
-      // luck for dropping DNA
-      
-    }
+      var luckNum = (Math.random()*99) + 1;
+      if (luckNum < PLAYER_CHARACTER.luck){
+        DNA.push({
+          x: ZOMBIES[i].x,
+          y: ZOMBIES[i].y
+        });
+      }
+
+
   }
 //if the bullet is on the zombie decrease the health and knockback
   for (var i = 0; i < ZOMBIES.length; i++){
@@ -217,6 +223,13 @@ function handleBulletAnimation() {
         if (ZOMBIES[j].hp<=0){
           ZOMBIES.splice(j, 1);
           j--;
+          var luckNum = (Math.random()*99) + 1;
+          if (luckNum < PLAYER_CHARACTER.luck){
+            DNA.push({
+              x: ZOMBIES[i].x,
+              y: ZOMBIES[i].y
+            });
+          }
         }
         if (!BULLETS[i].pierces) {
           j = ZOMBIES.length;
