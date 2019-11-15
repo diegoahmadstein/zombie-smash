@@ -352,9 +352,13 @@ function RenderWeapon(context) {
 
   function RenderDNA(context){
     for (dna of DNA){
-      context.fillRect(dna.x,dna.y,10,10);
+      context.fillRect(dna.x,dna.y,20,20);
     }
-
+    var dnaImage = new Image();
+    dnaImage.src = 'Sprites\\dna.png';
+    for (dna of DNA) {
+      context.drawImage(dnaImage, dna.x, dna.y, 20, 20);
+    }
   }
 
 function runGame() {
