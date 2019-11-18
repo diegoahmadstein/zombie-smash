@@ -46,6 +46,10 @@ function handleZombieAnimation() {
         });
       }
       ZOMBIES.splice(i,1);
+      if (ZOMBIES.length == 0){
+        GAME.started = false;
+        //go to the shop
+      }
       i--;
     }
 
@@ -238,6 +242,10 @@ function handleBulletAnimation() {
             });
           }
           ZOMBIES.splice(j, 1);
+          if (ZOMBIES.length == 0){
+            GAME.started = false;
+            //go to the shop
+          }
           j--;
         }
         if (!BULLETS[i].pierces) {
