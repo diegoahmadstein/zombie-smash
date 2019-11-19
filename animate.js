@@ -2,9 +2,10 @@ var wSwitchCooldown = 0; //reset to 30 when you switch weapons. decrememented ea
 var zombieCooldown = 0; //will be set to an amount equal to 7200 / #zombies that are supposed to spawn this level. decrememented each frame.
 var aCooldown=0; //will be reset to the cooldown of the current weapon whenever its used. decrememnted each frame in handleBulletAnimation
 var rCooldown=0; //will be reset to the reloadtime of the weapon. decremented each frame in handleBulletAnimation
-
+var hitCoolDown = 2;
 function handleZombieAnimation() {
   //creates new zombies in empty spaces.
+  hitCoolDown -= .025;
   if (zombieCooldown <= 0 && GAME.levelTime > 0) {
     zombieCooldown = 7200 / GAME.zombiesInc;
     var a;
@@ -37,10 +38,37 @@ function handleZombieAnimation() {
 //checks if zombies should be dead, removes them if so
   for (var i = 0; i<ZOMBIES.length; i++){
     if (ZOMBIES[i].hp<=0){
+      var luckNum = (Math.random()*99) + 1;
+      if (luckNum < PLAYER_CHARACTER.luck){
+        DNA.push({
+          x: ZOMBIES[i].x,
+          y: ZOMBIES[i].y
+        });
+      }
       ZOMBIES.splice(i,1);
+      if (ZOMBIES.length == 0){
+        GAME.started = false;
+        //go to the shop
+      }
       i--;
     }
+
   }
+//if the bullet is on the zombie decrease the health and knockback
+  for (var i = 0; i < ZOMBIES.length; i++){
+    for (bullet of BULLETS) {
+      if (ZOMBIES[i].x + 20 < bullet.x && ZOMBIES[i].x > bullet.x && ZOMBIES[i].y + 20 < bullet.y && ZOMBIES[i].y > bullet.y ){
+        ZOMBIES[i].hp -= WEAPONS[weapons[wepOn]].damage;
+        ZOMBIES[i].x += Math.cos(BULLETS[i].angle)*WEAPONS[weapons[wepOn]].knockback;
+        ZOMBIES[i].y += Math.sin(BULLETS[i].angle)*WEAPONS[weapons[wepOn]].knockback;
+      }
+    }
+
+
+
+  }
+
+
 
   //moves all zombies closer to the player
   for (var i = 0; i<ZOMBIES.length; i++) {
@@ -60,6 +88,10 @@ function handleZombieAnimation() {
       }
     }
     if (justSmashed) {
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       ZOMBIES[i].y += 1 * (y / Math.sqrt((x * x) + (y * y)));
       ZOMBIES[i].x += 1 * (x / Math.sqrt((x * x) + (y * y)));
     }
@@ -88,6 +120,10 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
       //PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
@@ -101,6 +137,10 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
       //PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
@@ -114,7 +154,10 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
-
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
     //  PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
@@ -128,8 +171,13 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
+      if (hitCoolDown < 0){
+        PLAYER_CHARACTER.hp -= 20 + GAME.level;
+        hitCoolDown = 2;
+      }
       PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed// * Math.cos(PLAYER_CHARACTER.theta);
       //PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
+
     }
   }
   //player may only attack if weapon isn't on cooldown, and if they aren't currently reloading.
@@ -157,6 +205,20 @@ function handlePCAnimation() {
   if (PLAYER_CHARACTER.y > GAME.canvas.height - 13) {
     PLAYER_CHARACTER.y = 287;
   }
+
+  if (PLAYER_CHARACTER.hp <= 0){
+    GAME.started = false;
+  }
+
+
+  //checks if pc picks up dna
+  for (var i = 0; i < DNA.length; i ++){
+    if (PLAYER_CHARACTER.x+ 20 > DNA[i].x && PLAYER_CHARACTER.x < DNA[i].x + 20
+      && PLAYER_CHARACTER.y+ 20 > DNA[i].y && PLAYER_CHARACTER.y < DNA[i].y+ 20){
+        PLAYER_CHARACTER.dna ++;
+        DNA.splice(i,1);
+      }
+  }
 }
 
 function handleBulletAnimation() {
@@ -172,7 +234,18 @@ function handleBulletAnimation() {
       if (BULLETS[i].x >= ZOMBIES[j].x && BULLETS[i].x <= ZOMBIES[j].x + 20 && BULLETS[i].y >= ZOMBIES[j].y && BULLETS[i].y < +ZOMBIES[j].y + 20) {
         ZOMBIES[j].hp -= BULLETS[i].damage;
         if (ZOMBIES[j].hp<=0){
+          var luckNum = (Math.random()*99) + 1;
+          if (luckNum < PLAYER_CHARACTER.luck){
+            DNA.push({
+              x: ZOMBIES[j].x,
+              y: ZOMBIES[j].y
+            });
+          }
           ZOMBIES.splice(j, 1);
+          if (ZOMBIES.length == 0){
+            GAME.started = false;
+            //go to the shop
+          }
           j--;
         }
         if (!BULLETS[i].pierces) {
@@ -294,6 +367,16 @@ function RenderWeapon(context) {
   drawRotatedImage(context, weaponImage, PLAYER_CHARACTER.x + 15 * Math.cos(PLAYER_CHARACTER.theta), PLAYER_CHARACTER.y + 15 * Math.sin(PLAYER_CHARACTER.theta), 20, 20, PLAYER_CHARACTER.theta);
   }
 
+  function RenderDNA(context){
+    for (dna of DNA){
+      context.fillRect(dna.x,dna.y,20,20);
+    }
+    var dnaImage = new Image();
+    dnaImage.src = 'Sprites\\dna.png';
+    for (dna of DNA) {
+      context.drawImage(dnaImage, dna.x, dna.y, 20, 20);
+    }
+  }
 
 function runGame() {
   var canvas = document.getElementById('mainCanvas');
@@ -315,6 +398,7 @@ function runGame() {
       RenderWeapon(context);
       RenderZombies(context);
       RenderBullets(context);
+      RenderDNA(context);
       context.font = "10px Arial";
 
       //this stuff writes all the stats in the topleft
