@@ -9,8 +9,8 @@ var CONTROLS = {
     pickWeapon: false,
     attack: false,
     reload : false
-  }
-
+  },
+shop: {mouseX :0, mouseY:0, click:false}
 };
 
 document.addEventListener('keydown', function(event) {
@@ -42,6 +42,11 @@ document.addEventListener('keydown', function(event) {
     case "r":
       CONTROLS.playerCharacter.reload = true;
       break;
+      case 'click':
+        CONTROLS.shop.mouseX = event.clientX;
+        CONTROLS.shop.mouseX = event.clientY;
+        CONTROLS.mouse.click = true; 
+        break;
     default:
       break;
   }

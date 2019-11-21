@@ -81,7 +81,7 @@ Katana: (melee) Deals 25*STR in a cone in front of player with radius 1 and angl
 
 Handgun: (ranged) Deals 35*sqrt(STR) when a bullet hits. When a bullet hits a zombie, it disappears. The bullet travels in a straight line at a speed of 10. Cooldown .5sec. No knockback. Clip size is 10. Pressing R causes a reload that takes 2 seconds. Costs 10DNA. Clips of ammo cost 1DNA.
 
-Flamethrower: (melee) Deals 30*sqrt(STR)  per second in a cone in front of player with radius 1 and angle 45°. Cooldown 1/60 second. No knockback. Clip size is 500. Pressing R causes a reload that takes 2 seconds. Costs 20DNA. Clips of ammo cost 2DNA.
+Flamethrower: (melee) Deals 30*sqrt(STR)  per second in a cone in front of player with radius 1 and angle 45°. Cooldown 1/60 second. No knockback. Clip size is 500. Pressing R causes a reload that takes 2 seconds. Costs 20DNA. Clips of ammo cost 1DNA.
 
 Semiautomatic: (ranged) Deals 20*sqrt(STR) when a bullet hits. When a bullet hits a zombie, it disappears. The bullet travels in a straight line at a speed of 10. Cooldown 0.1sec. No knockback. Clip size is 100. Pressing R causes a reload that takes 2 seconds. Costs 25 DNA. Clips of ammo cost 1DNA.
 

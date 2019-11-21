@@ -2,11 +2,18 @@ var wSwitchCooldown = 0; //reset to 30 when you switch weapons. decrememented ea
 var zombieCooldown = 0; //will be set to an amount equal to 7200 / #zombies that are supposed to spawn this level. decrememented each frame.
 var aCooldown = 0; //will be reset to the cooldown of the current weapon whenever its used. decrememnted each frame in handleBulletAnimation
 var rCooldown = 0; //will be reset to the reloadtime of the weapon. decremented each frame in handleBulletAnimation
-var hitCoolDown = 2;
+var highlighted = 0;
+var clubHitSound = new Audio ('Zombie Smash Sounds\\zombie hit with club.ogg');
+var playerHitSound = new Audio ('Zombie Smash Sounds\\player gets hit.wav');
+var clubSwing = new Audio ('Zombie Smash Sounds\\clubSwing.mp3');
+var winSound = new Audio ('Zombie Smash Sounds\\game win sound.wav');
+var dnaSound = new Audio ('Zombie Smash Sounds\\dnaSound.wav');
+var loseSound = new Audio ('Zombie Smash Sounds\\loseSound.wav');
+var hasntWon = true;
+
 
 function handleZombieAnimation() {
   //creates new zombies in empty spaces.
-  hitCoolDown -= .025;
   if (zombieCooldown <= 0 && GAME.levelTime > 0) {
     zombieCooldown = 7200 / GAME.zombiesInc;
     var a;
@@ -30,7 +37,8 @@ function handleZombieAnimation() {
     ZOMBIES.push({
       x: a,
       y: b,
-      hp: 100 + 2 * GAME.level
+      hp: 100 + 2 * GAME.level,
+      cooldown: 60
     }); //zombies' positions measure from their TOP LEFT CORNER. DIFFERENT FROM PLAYER
   }
   GAME.levelTime--;
@@ -38,6 +46,7 @@ function handleZombieAnimation() {
 
   //checks if zombies should be dead, removes them if so
   for (var i = 0; i < ZOMBIES.length; i++) {
+    ZOMBIES[i].cooldown--;
     if (ZOMBIES[i].hp <= 0) {
       var luckNum = (Math.random() * 99) + 1;
       if (luckNum < PLAYER_CHARACTER.luck) {
@@ -80,9 +89,10 @@ function handleZombieAnimation() {
       justSmashed = true;
     }
     if (justSmashed) {
-      if (hitCoolDown < 0) {
-        PLAYER_CHARACTER.hp -= 20 + GAME.level;
-        hitCoolDown = 2;
+      if (ZOMBIES[i].cooldown <= 0) {
+        PLAYER_CHARACTER.hp -= 19 + GAME.level;
+        playerHitSound.play();
+        ZOMBIES[i].cooldown = 120;
       }
     }
     for (otherZombie of ZOMBIES) {
@@ -119,10 +129,7 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
-      if (hitCoolDown < 0) {
-        PLAYER_CHARACTER.hp -= 20 + GAME.level;
-        hitCoolDown = 2;
-      }
+
       PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
       //PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
@@ -136,10 +143,7 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
-      if (hitCoolDown < 0) {
-        PLAYER_CHARACTER.hp -= 20 + GAME.level;
-        hitCoolDown = 2;
-      }
+
       PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
       //PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
@@ -153,10 +157,7 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
-      if (hitCoolDown < 0) {
-        PLAYER_CHARACTER.hp -= 20 + GAME.level;
-        hitCoolDown = 2;
-      }
+
       PLAYER_CHARACTER.x += PLAYER_CHARACTER.speed //* Math.cos(PLAYER_CHARACTER.theta);
       //  PLAYER_CHARACTER.y += PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
     }
@@ -170,10 +171,7 @@ function handlePCAnimation() {
       }
     }
     if (justSmashed) {
-      if (hitCoolDown < 0) {
-        PLAYER_CHARACTER.hp -= 20 + GAME.level;
-        hitCoolDown = 2;
-      }
+
       PLAYER_CHARACTER.x -= PLAYER_CHARACTER.speed // * Math.cos(PLAYER_CHARACTER.theta);
       //PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed * Math.sin(PLAYER_CHARACTER.theta);
 
@@ -184,9 +182,10 @@ function handlePCAnimation() {
     aCooldown = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].cooldown; //resets cooldown
     WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip--;
     attack();
+    clubSwing.play();
   }
   //player can reload only if they aren't currently reloading
-  if (CONTROLS.playerCharacter.reload && rCooldown <= 0&&WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned>0) {
+  if (CONTROLS.playerCharacter.reload && rCooldown <= 0 && WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned > 0) {
     rCooldown = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].reload;
     reload();
   }
@@ -215,6 +214,7 @@ function handlePCAnimation() {
     if (PLAYER_CHARACTER.x + 20 > DNA[i].x && PLAYER_CHARACTER.x < DNA[i].x + 20 &&
       PLAYER_CHARACTER.y + 20 > DNA[i].y && PLAYER_CHARACTER.y < DNA[i].y + 20) {
       PLAYER_CHARACTER.dna++;
+      dnaSound.play();
       DNA.splice(i, 1);
     }
   }
@@ -244,12 +244,12 @@ function handleBulletAnimation() {
         }
         j--;
 
-      if (!BULLETS[i].pierces) {
-        j = ZOMBIES.length;
-        BULLETS.splice(i, 1);
-        i--;
+        if (!BULLETS[i].pierces) {
+          j = ZOMBIES.length;
+          BULLETS.splice(i, 1);
+          i--;
+        }
       }
-    }
     }
   }
 
@@ -349,26 +349,18 @@ function RenderWeapon(context) {
   wSwitchCooldown--;
 
   //this part decided which weapon picture to show on the screen
-  if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 0) {
-    weaponImage.src = 'Sprites\\club.png';
-  } else if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 6) {
-    weaponImage.src = 'Sprites\\excalibur.png';
-  } else if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 3) {
-    weaponImage.src = 'Sprites\\flamethrower.png';
-  } else if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 2) {
-    weaponImage.src = 'Sprites\\handgun.png';
-  } else if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 1) {
-    weaponImage.src = 'Sprites\\katana.png';
-  } else if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 4) {
-    weaponImage.src = 'Sprites\\semiauto.png';
-  } else if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 5) {
-    weaponImage.src = 'Sprites\\sniperrifle.png';
+  weaponImage.src = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].image;
+  if (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].class=="melee"&&aCooldown>0){
+    weaponImage.src =  WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].fimage;
+
   }
   //draws weapon in topleft
   context.drawImage(weaponImage, 87, 2, 15, 15);
 
   //draws the player's weapon
+
   drawRotatedImage(context, weaponImage, PLAYER_CHARACTER.x + 15 * Math.cos(PLAYER_CHARACTER.theta), PLAYER_CHARACTER.y + 15 * Math.sin(PLAYER_CHARACTER.theta), 20, 20, PLAYER_CHARACTER.theta);
+
 }
 
 function RenderDNA(context) {
@@ -382,15 +374,81 @@ function RenderDNA(context) {
   }
 }
 
+function drawShopStuff(context) {
+  for (var i = 0; i < WEAPONS.length - 1; i++) {
+    drawShopItem(context, WEAPONS[i]);
+  }
+  for (var i = 0; i < PLAYER_CHARACTER.weapons.length; i++) {
+    drawInventItem(context, WEAPONS[PLAYER_CHARACTER.weapons[i]], i);
+  }
+  for (var i = 0; i < TRAITS.length; i++) {
+    drawShopItem(context, TRAITS[i]);
+  }
+}
+
+function drawShopItem(context, item) {
+  context.beginPath();
+  context.rect(item.shopXpos, item.shopYpos, 50 * item.shopSize, 50 * item.shopSize);
+  context.stroke();
+  var itemImage = new Image();
+  itemImage.src = item.image;
+  context.drawImage(itemImage, item.shopXpos, item.shopYpos, 50 * item.shopSize, 50 * item.shopSize);
+  if (item.shopSize == 1) {
+    if (!item.owned) {
+      context.fillText("" + item.name + ": " + item.cost + " DNA", item.shopXpos, item.shopYpos + 60 * item.shopSize);
+    } else {
+      context.fillText("" + item.name + ": OWNED", item.shopXpos, item.shopYpos + 60 * item.shopSize);
+
+    }
+
+    if (item.ammoLeftInClip != -1) {
+      context.beginPath();
+      context.rect(item.shopXpos, 70 + item.shopYpos, 50 * item.shopSize, 20 * item.shopSize);
+      context.stroke();
+      var ammoImage = new Image();
+      ammoImage.src = 'Sprites\\ammopic.png';
+      context.drawImage(ammoImage, item.shopXpos, 70 + item.shopYpos, 50 * item.shopSize, 20 * item.shopSize);
+      context.fillText("Ammo: 1 DNA", item.shopXpos, item.shopYpos + 100 * item.shopSize);
+    }
+  }
+  else{
+    context.font = "8px Ariel";
+    context.fillText("" + item.name + " "+(item.level+1), item.shopXpos, item.shopYpos + 65 * item.shopSize);
+    context.fillText("Cost: "+COSTS[item.level-1]+" DNA", item.shopXpos, item.shopYpos + 80 * item.shopSize);
+    context.font = "10px Ariel";
+  }
+}
+
+function drawInventItem(context, item, i) {
+  if (i == highlighted) {
+    context.fillStyle = "#FF0000";
+    context.fillRect(525, 25 + 60 * i, 50 * item.shopSize, 50 * item.shopSize);
+    context.fillStyle = "#000000";
+
+  } else {
+    context.beginPath();
+    context.rect(525, 25 + 60 * i, 50 * item.shopSize, 50 * item.shopSize);
+    context.stroke();
+  }
+  var itemImage = new Image();
+  itemImage.src = item.image;
+  context.drawImage(itemImage, 525, 25 + 60 * i, 50 * item.shopSize, 50 * item.shopSize);
+}
+
+function handleShopping(context){
+
+}
+
+
 function runGame() {
   var canvas = document.getElementById('mainCanvas');
   var context = canvas.getContext('2d');
 
 
-
   if (GAME.started) {
-    if (GAME.levelTime != 0 || ZOMBIES.length > 0) {
+    if ((GAME.levelTime >= 0 || ZOMBIES.length > 0 || DNA.length > 0) && PLAYER_CHARACTER.hp > 0) {
       // 1 - Reposition the objects
+      hasntWon = true;
       handlePCAnimation();
       handleBulletAnimation();
       handleZombieAnimation();
@@ -407,17 +465,36 @@ function runGame() {
 
       //this stuff writes all the stats in the topleft
       if (WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].clipSize == -1) {
-        context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna + "       ∞/∞", 10, 15);
+        context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna , 10, 15);
+        context.fillText("∞/∞", 105, 15)
       } else {
         context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna + "         " + WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoLeftInClip + "/" + WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoOwned, 10, 15);
       }
 
-    } else { //currently there's no way to hit this
+    } else if (PLAYER_CHARACTER.hp <= 0) {
       context.font = "30px Arial";
       context.fillText("Game Over      Level " + GAME.level, 135, 200);
+      if (hasntWon){
+        loseSound.play();
+        hasntWon=false;
+      }
+    } else {
+      if (hasntWon){
+        winSound.play();
+        hasntWon=false;
+      }
+      context.clearRect(0, 0, 600, 300)
+
+      drawShopStuff(context);
+      context.font = "20px Arial";
+      context.fillText("DNA: " + PLAYER_CHARACTER.dna, 10, 30);
+      context.font = "10px Arial";
+      handleShopping(context);
     }
   }
   window.requestAnimationFrame(runGame);
 }
+
+
 
 window.requestAnimationFrame(runGame);

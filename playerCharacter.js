@@ -15,7 +15,7 @@ function initializePC() {
     luck: 10,
     theta: 0,
     wepOn: 0,
-    weapons: [2, 3, 4],
+    weapons: [0, 7, 7],
     initialized: true
   };
 }
@@ -41,16 +41,19 @@ function attack() {
         upperRange = upperRange % (2*Math.PI);
         if (disBetween<=rad && (angle<=upperRange || angle>=lowerRange)){
           zombie.hp -= weapon.damage;
+          clubHitSound.play();
         }
       }
       else if (lowerRange < 0){
         lowerRange = lowerRange + 2*Math.PI;
         if (disBetween<=rad && (angle<=upperRange || angle>=lowerRange)){
           zombie.hp -= weapon.damage;
+          clubHitSound.play();
         }
       }
       else if (disBetween<=rad && angle>= lowerRange && angle<= upperRange){
         zombie.hp -= weapon.damage;
+        clubHitSound.play();
       }
     }
   }
