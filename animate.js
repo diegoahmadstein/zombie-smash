@@ -3,13 +3,23 @@ var zombieCooldown = 0; //will be set to an amount equal to 7200 / #zombies that
 var aCooldown = 0; //will be reset to the cooldown of the current weapon whenever its used. decrememnted each frame in handleBulletAnimation
 var rCooldown = 0; //will be reset to the reloadtime of the weapon. decremented each frame in handleBulletAnimation
 var highlighted = 0;
-var clubHitSound = new Audio ('Zombie Smash Sounds\\zombie hit with club.ogg');
-var playerHitSound = new Audio ('Zombie Smash Sounds\\player gets hit.wav');
-var clubSwing = new Audio ('Zombie Smash Sounds\\clubSwing.mp3');
-var winSound = new Audio ('Zombie Smash Sounds\\game win sound.wav');
-var dnaSound = new Audio ('Zombie Smash Sounds\\dnaSound.wav');
-var loseSound = new Audio ('Zombie Smash Sounds\\loseSound.wav');
+var clubHitSound = new Audio('Zombie Smash Sounds\\zombie hit with club.ogg');
+var playerHitSound = new Audio('Zombie Smash Sounds\\player gets hit.wav');
+var clubSwing = new Audio('Zombie Smash Sounds\\clubSwing.mp3');
+var winSound = new Audio('Zombie Smash Sounds\\game win sound.wav');
+var dnaSound = new Audio('Zombie Smash Sounds\\dnaSound.wav');
+var loseSound = new Audio('Zombie Smash Sounds\\loseSound.wav');
+var katanaSwing = new Audio('Zombie Smash Sounds\\katana swing.wav');
+var excalSwing = new Audio('Zombie Smash Sounds\\excalibur swing.wav');
+var flameSound = new Audio('Zombie Smash Sounds\\flamethrower.wav');
+var gunSound = new Audio('Zombie Smash Sounds\\gunshot for handgun and sniper.wav');
+var semiSound = new Audio('Zombie Smash Sounds\\machineGunSound.mp3');
+var swordHitSound = new Audio('Zombie Smash Sounds\\zombie cut by katana or excalibur.wav');
+var bulletHitSound = new Audio('Zombie Smash Sounds\\zombie getting hit by any bullet.mp3');
+var reloadSound = new Audio('Zombie Smash Sounds\\gun reload sound.mp3');
+var buySound = new Audio('Zombie Smash Sounds\\upgrade or weapon purchased.wav');
 var hasntWon = true;
+
 
 
 function handleZombieAnimation() {
@@ -182,7 +192,6 @@ function handlePCAnimation() {
     aCooldown = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].cooldown; //resets cooldown
     WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip--;
     attack();
-    clubSwing.play();
   }
   //player can reload only if they aren't currently reloading
   if (CONTROLS.playerCharacter.reload && rCooldown <= 0 && WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned > 0) {
@@ -232,6 +241,7 @@ function handleBulletAnimation() {
     for (var j = 0; j < ZOMBIES.length; j++) {
       if (BULLETS[i].x >= ZOMBIES[j].x && BULLETS[i].x <= ZOMBIES[j].x + 20 && BULLETS[i].y >= ZOMBIES[j].y && BULLETS[i].y < +ZOMBIES[j].y + 20) {
         ZOMBIES[j].hp -= BULLETS[i].damage;
+        bulletHitSound.play();
         if (ZOMBIES[j].hp <= 0) {
           var luckNum = (Math.random() * 99) + 1;
           if (luckNum < PLAYER_CHARACTER.luck) {
@@ -350,12 +360,12 @@ function RenderWeapon(context) {
 
   //this part decided which weapon picture to show on the screen
   weaponImage.src = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].image;
-  if (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].class=="melee"&&aCooldown>0){
-    weaponImage.src =  WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].fimage;
+  if (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].class == "melee" && aCooldown > 0) {
+    weaponImage.src = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].fimage;
 
   }
   //draws weapon in topleft
-  context.drawImage(weaponImage, 87, 2, 15, 15);
+  context.drawImage(weaponImage, 100, 2, 15, 15);
 
   //draws the player's weapon
 
@@ -401,7 +411,7 @@ function drawShopItem(context, item) {
 
     }
 
-    if (item.ammoLeftInClip != -1) {
+    if (item.ammoLeftInClip > -1) {
       context.beginPath();
       context.rect(item.shopXpos, 70 + item.shopYpos, 50 * item.shopSize, 20 * item.shopSize);
       context.stroke();
@@ -410,11 +420,15 @@ function drawShopItem(context, item) {
       context.drawImage(ammoImage, item.shopXpos, 70 + item.shopYpos, 50 * item.shopSize, 20 * item.shopSize);
       context.fillText("Ammo: 1 DNA", item.shopXpos, item.shopYpos + 100 * item.shopSize);
     }
-  }
-  else{
+  } else {
     context.font = "8px Ariel";
-    context.fillText("" + item.name + " "+(item.level+1), item.shopXpos, item.shopYpos + 65 * item.shopSize);
-    context.fillText("Cost: "+COSTS[item.level-1]+" DNA", item.shopXpos, item.shopYpos + 80 * item.shopSize);
+    if (item.level < 7) {
+      context.fillText("" + item.name + " " + (item.level + 1), item.shopXpos, item.shopYpos + 65 * item.shopSize);
+      context.fillText("Cost: " + COSTS[item.level - 1] + " DNA", item.shopXpos, item.shopYpos + 80 * item.shopSize);
+    } else {
+      context.fillText("" + item.name + " MAX", item.shopXpos, item.shopYpos + 65 * item.shopSize);
+
+    }
     context.font = "10px Ariel";
   }
 }
@@ -435,8 +449,56 @@ function drawInventItem(context, item, i) {
   context.drawImage(itemImage, 525, 25 + 60 * i, 50 * item.shopSize, 50 * item.shopSize);
 }
 
-function handleShopping(context){
-
+function handleShopping(context) {
+  if (CONTROLS.shop.click) {
+    for (var i = 0; i < WEAPONS.length - 1; i++) {
+      if (WEAPONS[i].shopXpos < CONTROLS.shop.mouseX && CONTROLS.shop.mouseX < WEAPONS[i].shopXpos + 50 * WEAPONS[i].shopSize && WEAPONS[i].shopYpos < CONTROLS.shop.mouseY && CONTROLS.shop.mouseY < WEAPONS[i].shopYpos + 50 * WEAPONS[i].shopSize) {
+        if (WEAPONS[i].owned) {
+          PLAYER_CHARACTER.weapons[highlighted] = i;
+          highlighted++;
+          if (highlighted == PLAYER_CHARACTER.weapons.length) {
+            highlighted = 0;
+          }
+        } else if (PLAYER_CHARACTER.dna >= WEAPONS[i].cost) {
+          WEAPONS[i].owned = true;
+          buySound.play();
+          PLAYER_CHARACTER.dna -= WEAPONS[i].cost;
+        }
+      }
+      if (WEAPONS[i].ammoLeftInClip > -1) {
+        if (WEAPONS[i].shopXpos < CONTROLS.shop.mouseX && CONTROLS.shop.mouseX < WEAPONS[i].shopXpos + 50 * WEAPONS[i].shopSize && WEAPONS[i].shopYpos + 70 < CONTROLS.shop.mouseY && CONTROLS.shop.mouseY < 70 + WEAPONS[i].shopYpos + 20 * WEAPONS[i].shopSize) {
+          if (PLAYER_CHARACTER.dna >= 1) {
+            PLAYER_CHARACTER.dna--;
+            WEAPONS[i].ammoOwned += WEAPONS[i].clipSize;
+          }
+        }
+      }
+    }
+    for (var i = 0; i < TRAITS.length; i++) {
+      if (TRAITS[i].shopXpos < CONTROLS.shop.mouseX && CONTROLS.shop.mouseX < TRAITS[i].shopXpos + 50 * TRAITS[i].shopSize && TRAITS[i].shopYpos < CONTROLS.shop.mouseY && CONTROLS.shop.mouseY < TRAITS[i].shopYpos + 50 * TRAITS[i].shopSize) {
+        if (PLAYER_CHARACTER.dna >= COSTS[TRAITS[i].level-1]&&COSTS[TRAITS[i].level-1]>0) {
+          PLAYER_CHARACTER.dna -= COSTS[TRAITS[i].level-1];
+          TRAITS[i].level++;
+          switch (TRAITS[i].name){
+            case "Strength":
+            PLAYER_CHARACTER.strength = TRAITS[i].track[TRAITS[i].level-1];
+            break;
+            case "Speed":
+            PLAYER_CHARACTER.speed = 2*TRAITS[i].track[TRAITS[i].level-1];
+            break;
+            case "HP":
+            PLAYER_CHARACTER.baseHP = TRAITS[i].track[TRAITS[i].level-1];
+            break;
+            case "Luck":
+            PLAYER_CHARACTER.luck = TRAITS[i].track[TRAITS[i].level-1];
+            break;
+            default:
+            break;
+          }
+        }
+      }
+    }
+  }
 }
 
 
@@ -465,24 +527,36 @@ function runGame() {
 
       //this stuff writes all the stats in the topleft
       if (WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].clipSize == -1) {
-        context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna , 10, 15);
-        context.fillText("∞/∞", 105, 15)
+        context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna, 10, 15);
+        context.fillText("∞/∞", 120, 15)
       } else {
-        context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna + "         " + WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoLeftInClip + "/" + WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoOwned, 10, 15);
+        context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna , 10, 15);
+        context.fillText(WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoLeftInClip + "/" + WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoOwned, 120, 15);
+
       }
+      context.font = "30px Arial";
+      context.fillText("Level "+GAME.level, 250, 30);
+      if (GAME.levelTime>0){
+        context.fillText(Math.trunc(GAME.levelTime/60), 550, 30);
+      }
+      else{
+        context.fillText("0", 550, 30);
+      }
+      context.font = "10px Arial";
 
     } else if (PLAYER_CHARACTER.hp <= 0) {
       context.font = "30px Arial";
-      context.fillText("Game Over      Level " + GAME.level, 135, 200);
+      context.fillText("Game Over", 135, 200);
       if (hasntWon){
         loseSound.play();
         hasntWon=false;
+}
       }
-    } else {
-      if (hasntWon){
-        winSound.play();
-        hasntWon=false;
-      }
+     else {
+       if (hasntWon){
+         winSound.play();
+         hasntWon=false;
+ }
       context.clearRect(0, 0, 600, 300)
 
       drawShopStuff(context);
@@ -490,7 +564,20 @@ function runGame() {
       context.fillText("DNA: " + PLAYER_CHARACTER.dna, 10, 30);
       context.font = "10px Arial";
       handleShopping(context);
+
+      if (CONTROLS.shop.nextLevel){
+        CONTROLS.shop.nextLevel=false;
+        CONTROLS.shop.click=false;
+        GAME.level++;
+        GAME.levelTime=3600;
+        PLAYER_CHARACTER.hp=PLAYER_CHARACTER.baseHP;
+        GAME.zombiesInc= 15+ Math.trunc(Math.random()*10) + 5*GAME.level;
+        PLAYER_CHARACTER.x=300;
+        PLAYER_CHARACTER.y=150;
+        PLAYER_CHARACTER.theta=0;
+      }
     }
+    CONTROLS.shop.click = false;
   }
   window.requestAnimationFrame(runGame);
 }

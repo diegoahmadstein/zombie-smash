@@ -12,7 +12,7 @@ function initializePC() {
     speed: 1.5,
     baseHP: 100,
     hp: 100,
-    luck: 10,
+    luck: 20,
     theta: 0,
     wepOn: 0,
     weapons: [0, 7, 7],
@@ -23,6 +23,32 @@ function initializePC() {
 //does two different things depending on whether the weapon is ranged or melee. note that for implementation reasons, the flamethrower is considered a melee weapon
 function attack() {
   var weapon = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]];
+
+  switch (weapon.name){
+    case "Club":
+    clubSwing.play();
+    break;
+    case "Katana":
+    katanaSwing.play();
+    break;
+    case "Excalibur":
+    excalSwing.play();
+    break;
+    case "Flamethrower":
+    flameSound.play();
+    break;
+    case "Handgun":
+    gunSound.play();
+    break;
+    case "Sniper":
+    gunSound.play();
+    break;
+    case "Semiauto":
+    semiSound.play();
+    break;
+    default:
+    break;
+  }
 
   //melee weapon stuff. warning: very confusing. if you need to touch this stuff, ask diego to explain it.
   if (weapon.class == "melee") {
@@ -40,20 +66,62 @@ function attack() {
       if (upperRange >= 2*Math.PI){
         upperRange = upperRange % (2*Math.PI);
         if (disBetween<=rad && (angle<=upperRange || angle>=lowerRange)){
+          zombie.x+=weapon.knockback*Math.cos(PLAYER_CHARACTER.theta);
+          zombie.y+=weapon.knockback*Math.sin(PLAYER_CHARACTER.theta);
           zombie.hp -= weapon.damage;
-          clubHitSound.play();
+          switch (weapon.name){
+            case "Club":
+            clubHitSound.play();
+            break;
+            case "Katana":
+            swordHitSound.play();
+            break;
+            case "Excalibur":
+            swordHitSound.play();
+            break;
+            default:
+            break;
+          }
         }
       }
       else if (lowerRange < 0){
         lowerRange = lowerRange + 2*Math.PI;
         if (disBetween<=rad && (angle<=upperRange || angle>=lowerRange)){
+          zombie.x+=weapon.knockback*Math.cos(PLAYER_CHARACTER.theta);
+          zombie.y+=weapon.knockback*Math.sin(PLAYER_CHARACTER.theta);
           zombie.hp -= weapon.damage;
-          clubHitSound.play();
+          switch (weapon.name){
+            case "Club":
+            clubHitSound.play();
+            break;
+            case "Katana":
+            swordHitSound.play();
+            break;
+            case "Excalibur":
+            swordHitSound.play();
+            break;
+            default:
+            break;
+          }
         }
       }
       else if (disBetween<=rad && angle>= lowerRange && angle<= upperRange){
+        zombie.x+=weapon.knockback*Math.cos(PLAYER_CHARACTER.theta);
+        zombie.y+=weapon.knockback*Math.sin(PLAYER_CHARACTER.theta);
         zombie.hp -= weapon.damage;
-        clubHitSound.play();
+        switch (weapon.name){
+          case "Club":
+          clubHitSound.play();
+          break;
+          case "Katana":
+          swordHitSound.play();
+          break;
+          case "Excalibur":
+          swordHitSound.play();
+          break;
+          default:
+          break;
+        }
       }
     }
   }
@@ -80,9 +148,11 @@ function reload(){
   if (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned>=WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].clipSize-WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip){
     WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned-=WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].clipSize-WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip;
     WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip=WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].clipSize;
+    reloadSound.play();
   }
   else if (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned>=0){
     WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip+=WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned;
     WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoOwned =0;
+    reloadSound.play();
   }
 }

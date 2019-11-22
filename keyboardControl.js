@@ -10,7 +10,7 @@ var CONTROLS = {
     attack: false,
     reload : false
   },
-shop: {mouseX :0, mouseY:0, click:false}
+shop: {mouseX :0, mouseY:0, click:false, nextLevel: false}
 };
 
 document.addEventListener('keydown', function(event) {
@@ -42,16 +42,19 @@ document.addEventListener('keydown', function(event) {
     case "r":
       CONTROLS.playerCharacter.reload = true;
       break;
-      case 'click':
-        CONTROLS.shop.mouseX = event.clientX;
-        CONTROLS.shop.mouseX = event.clientY;
-        CONTROLS.mouse.click = true; 
+      case "Enter":
+        CONTROLS.shop.nextLevel = true;
         break;
     default:
       break;
   }
 });
 
+document.addEventListener('click', function(event) {
+  CONTROLS.shop.mouseX = event.clientX -5;
+  CONTROLS.shop.mouseY = event.clientY -5;
+  CONTROLS.shop.click = true;
+});
 
 document.addEventListener('keyup', function(event) {
   switch (event.key) {
