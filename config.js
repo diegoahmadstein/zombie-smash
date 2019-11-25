@@ -6,7 +6,7 @@ var GAME = {
   started : true,
   level : 1, //should increment. When it does, set zombiesInc to 20 + Math.trunc(Math.random()*10) + 5*Game.level
   inLevel: true, //this can become false as a condition to go to shop? idk i thought it would be helpful
-  levelTime: 36, //decrements to 0. After 0, zombies stop spawning
+  levelTime: 3600, //decrements to 0. After 0, zombies stop spawning
   zombiesInc: 20+ Math.trunc(Math.random()*10)
 };
 
@@ -21,7 +21,7 @@ var PLAYER_CHARACTER = {
     speed: 2,
     baseHP: 100,
     hp: 100,
-    luck: 20,
+    luck: 40,
     theta: 0, //the player's angle with the positive x axis
     wepOn: 0, // which of the three equipped weapons the player is using
     weapons: [0, 7, 7] //which three weapons the player has equipped
@@ -43,7 +43,7 @@ var TRAITS= [
 {track : [1, 1.05, 1.1025, 1.212, 1.334, 1.667, 2.5], name: "Strength", image:'Sprites\\arm.png', shopXpos:380, shopYpos:240, shopSize:.6, level: 1},
 {track : [1, 1.05, 1.1025, 1.212, 1.334, 1.667, 2], name: "Speed", image:'Sprites\\shoe.png', shopXpos:430, shopYpos:240, shopSize:.6, level: 1},
 {track : [100, 110, 120, 140, 200, 250, 400], name: "HP", image:'Sprites\\heart.png', shopXpos:480, shopYpos:240, shopSize:.6, level: 1},
-{track : [30, 33, 40, 50, 60, 75, 100], name: "Luck", image:'Sprites\\dna.png', shopXpos:530, shopYpos:240, shopSize:.6, level: 1}
+{track : [40, 45, 50, 60, 70, 80, 100], name: "Luck", image:'Sprites\\dna.png', shopXpos:530, shopYpos:240, shopSize:.6, level: 1}
 ]
 
 var COSTS= [2,3,5,8,10,20, -1];

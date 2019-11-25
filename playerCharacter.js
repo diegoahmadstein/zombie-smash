@@ -12,7 +12,7 @@ function initializePC() {
     speed: 1.5,
     baseHP: 100,
     hp: 100,
-    luck: 20,
+    luck: 40,
     theta: 0,
     wepOn: 0,
     weapons: [0, 7, 7],
