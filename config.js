@@ -9,7 +9,7 @@ var GAME = {
   levelTime: 3600, //decrements to 0. After 0, zombies stop spawning
   zombiesInc: 20+ Math.trunc(Math.random()*10)
 };
-
+//please update
 
 var PLAYER_CHARACTER = {
   initialized : false,
