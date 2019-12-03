@@ -19,6 +19,7 @@ var bulletHitSound = new Audio('Zombie Smash Sounds\\zombie getting hit by any b
 var reloadSound = new Audio('Zombie Smash Sounds\\gun reload sound.mp3');
 var buySound = new Audio('Zombie Smash Sounds\\upgrade or weapon purchased.wav');
 var hasntWon = true;
+var beginGame=false;
 
 
 
@@ -505,7 +506,15 @@ function handleShopping(context) {
 function runGame() {
   var canvas = document.getElementById('mainCanvas');
   var context = canvas.getContext('2d');
-
+  if (!beginGame){
+    context.font = "40px Arial";
+    context.fillText("Zombie Smash", 135, 100);
+    context.font = "20px Arial";
+    context.fillText("[Space] to start", 135, 200);
+    if (CONTROLS.playerCharacter.attack){
+      beginGame=true;
+    }
+  }else{
 
   if (GAME.started) {
     if ((GAME.levelTime >= 0 || ZOMBIES.length > 0 || DNA.length > 0) && PLAYER_CHARACTER.hp > 0) {
@@ -579,6 +588,7 @@ function runGame() {
     }
     CONTROLS.shop.click = false;
   }
+}
   window.requestAnimationFrame(runGame);
 }
 
