@@ -101,7 +101,7 @@ function handleZombieAnimation() {
     }
     if (justSmashed) {
       if (ZOMBIES[i].cooldown <= 0) {
-        PLAYER_CHARACTER.hp -= 19 + GAME.level;
+        PLAYER_CHARACTER.hp -= 9 + GAME.level;
         playerHitSound.play();
         ZOMBIES[i].cooldown = 120;
       }
