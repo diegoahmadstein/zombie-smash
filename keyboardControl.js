@@ -21,10 +21,10 @@ document.addEventListener('keydown', function(event) {
     case "s":
       CONTROLS.playerCharacter.down = true;
       break;
-    case "q":
+    case "ArrowLeft":
       CONTROLS.playerCharacter.rotateCounterClockwise = true;
       break;
-    case "e":
+    case "ArrowRight":
       CONTROLS.playerCharacter.rotateClockwise = true;
       break;
     case "a":
@@ -33,7 +33,7 @@ document.addEventListener('keydown', function(event) {
     case "d":
       CONTROLS.playerCharacter.right = true;
       break;
-    case "p":
+    case "Shift":
       CONTROLS.playerCharacter.pickWeapon = true;
       break;
     case " ":
@@ -64,10 +64,10 @@ document.addEventListener('keyup', function(event) {
     case "s":
       CONTROLS.playerCharacter.down = false;
       break;
-    case "q":
+    case "ArrowLeft":
       CONTROLS.playerCharacter.rotateCounterClockwise = false;
       break;
-    case "e":
+    case "ArrowRight":
       CONTROLS.playerCharacter.rotateClockwise = false;
       break;
     case "a":
@@ -76,7 +76,7 @@ document.addEventListener('keyup', function(event) {
     case "d":
       CONTROLS.playerCharacter.right = false;
       break;
-    case "p":
+    case "Shift":
       CONTROLS.playerCharacter.pickWeapon = false;
       break;
     case " ":

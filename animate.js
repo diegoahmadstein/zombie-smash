@@ -510,7 +510,7 @@ function runGame() {
     context.font = "40px Arial";
     context.fillText("Zombie Smash", 135, 100);
     context.font = "14px Arial";
-    context.fillText("[W][A][S][D] to move, [Q][E] to rotate, [Space] to attack, [R] to reload, [P] to switch weapons", 20, 200);
+    context.fillText("[W][A][S][D] to move, [LeftArrow][RightArrow] to rotate, [Space] to attack, [R] to reload, [Shift] to switch weapons", 20, 200);
     context.fillText("(In Shop: Click to buy, click an owned weapon to equip it to the red slot. [Enter] to leave)", 20, 240);
     context.fillText("[Space] to start", 20, 280);
     if (CONTROLS.playerCharacter.attack){
