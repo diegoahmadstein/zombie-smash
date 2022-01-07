@@ -4,8 +4,8 @@ var CONTROLS = {
     down: false,
     right: false,
     left: false,
-    rotateClockwise: false,
-    rotateCounterClockwise: false,
+    mouseX: 0,
+    mouseY: 0,
     pickWeapon: false,
     attack: false,
     reload : false
@@ -36,9 +36,6 @@ document.addEventListener('keydown', function(event) {
     case "Shift":
       CONTROLS.playerCharacter.pickWeapon = true;
       break;
-    case " ":
-      CONTROLS.playerCharacter.attack = true;
-      break;
     case "r":
       CONTROLS.playerCharacter.reload = true;
       break;
@@ -50,7 +47,22 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
+
+document.addEventListener('mousemove', function(event) {
+  CONTROLS.playerCharacter.mouseX = event.clientX -5;
+  CONTROLS.playerCharacter.mouseY = event.clientY -5;
+});
+
+document.addEventListener('mousedown', function(event) {
+  CONTROLS.playerCharacter.attack = true;
+});
+
+document.addEventListener('mouseup', function(event) {
+  CONTROLS.playerCharacter.attack = false;
+});
+
 document.addEventListener('click', function(event) {
+
   CONTROLS.shop.mouseX = event.clientX -5;
   CONTROLS.shop.mouseY = event.clientY -5;
   CONTROLS.shop.click = true;

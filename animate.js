@@ -121,16 +121,20 @@ function handleZombieAnimation() {
 function handlePCAnimation() {
   //these if statements handle the movement for the player if their respective buttons are being pressed.
   //they have a similar failsafe to zombies that prevents them from moving the player into a space occupied by a zombie.
-  if (CONTROLS.playerCharacter.rotateCounterClockwise) {
-    PLAYER_CHARACTER.theta -= Math.sqrt(PLAYER_CHARACTER.speed) * Math.PI / 60;
-    if (PLAYER_CHARACTER.theta < 0) {
-      PLAYER_CHARACTER.theta += (2 * Math.PI);
-    }
-  }
-  if (CONTROLS.playerCharacter.rotateClockwise) {
-    PLAYER_CHARACTER.theta += Math.sqrt(PLAYER_CHARACTER.speed) * Math.PI / 60;
-    PLAYER_CHARACTER.theta = PLAYER_CHARACTER.theta % (2 * Math.PI);
-  }
+  // if (CONTROLS.playerCharacter.rotateCounterClockwise) {
+  //   PLAYER_CHARACTER.theta -= Math.sqrt(PLAYER_CHARACTER.speed) * Math.PI / 60;
+  //   if (PLAYER_CHARACTER.theta < 0) {
+  //     PLAYER_CHARACTER.theta += (2 * Math.PI);
+  //   }
+  // }
+  // if (CONTROLS.playerCharacter.rotateClockwise) {
+  //   PLAYER_CHARACTER.theta += Math.sqrt(PLAYER_CHARACTER.speed) * Math.PI / 60;
+  //   PLAYER_CHARACTER.theta = PLAYER_CHARACTER.theta % (2 * Math.PI);
+  // }
+  xdif = CONTROLS.playerCharacter.mouseX - PLAYER_CHARACTER.x
+  ydif = CONTROLS.playerCharacter.mouseY - PLAYER_CHARACTER.y
+  PLAYER_CHARACTER.theta = -Math.atan2(xdif, ydif) + Math.PI / 2
+
   if (CONTROLS.playerCharacter.up) {
     PLAYER_CHARACTER.y -= PLAYER_CHARACTER.speed;
     var justSmashed = false;
@@ -223,159 +227,159 @@ function handlePCAnimation() {
   for (var i = 0; i < DNA.length; i++) {
     if (PLAYER_CHARACTER.x + 20 > DNA[i].x && PLAYER_CHARACTER.x < DNA[i].x + 20 &&
       PLAYER_CHARACTER.y + 20 > DNA[i].y && PLAYER_CHARACTER.y < DNA[i].y + 20) {
-      PLAYER_CHARACTER.dna++;
-      dnaSound.play();
-      DNA.splice(i, 1);
-    }
-  }
-}
-
-function handleBulletAnimation() {
-  aCooldown--; //decrements attack cooldown
-  rCooldown--; //decrements reload time
-  for (var i = 0; i < BULLETS.length; i++) {
-    //moves the bullet
-    BULLETS[i].x += (BULLETS[i].speed) * Math.cos(BULLETS[i].angle);
-    BULLETS[i].y += (BULLETS[i].speed) * Math.sin(BULLETS[i].angle);
-
-    //detects collisions, decrements zombies hp if hit, removes bullet if its not piercing type
-    for (var j = 0; j < ZOMBIES.length; j++) {
-      if (BULLETS[i].x >= ZOMBIES[j].x && BULLETS[i].x <= ZOMBIES[j].x + 20 && BULLETS[i].y >= ZOMBIES[j].y && BULLETS[i].y < +ZOMBIES[j].y + 20) {
-        ZOMBIES[j].hp -= BULLETS[i].damage;
-        bulletHitSound.play();
-        if (ZOMBIES[j].hp <= 0) {
-          var luckNum = (Math.random() * 99) + 1;
-          if (luckNum < PLAYER_CHARACTER.luck) {
-            DNA.push({
-              x: ZOMBIES[j].x,
-              y: ZOMBIES[j].y
-            });
-          }
-          ZOMBIES.splice(j, 1);
-        }
-        j--;
-
-        if (!BULLETS[i].pierces) {
-          j = ZOMBIES.length;
-          BULLETS.splice(i, 1);
-          i--;
-        }
+        PLAYER_CHARACTER.dna++;
+        dnaSound.play();
+        DNA.splice(i, 1);
       }
     }
   }
 
+  function handleBulletAnimation() {
+    aCooldown--; //decrements attack cooldown
+    rCooldown--; //decrements reload time
+    for (var i = 0; i < BULLETS.length; i++) {
+      //moves the bullet
+      BULLETS[i].x += (BULLETS[i].speed) * Math.cos(BULLETS[i].angle);
+      BULLETS[i].y += (BULLETS[i].speed) * Math.sin(BULLETS[i].angle);
+
+      //detects collisions, decrements zombies hp if hit, removes bullet if its not piercing type
+      for (var j = 0; j < ZOMBIES.length; j++) {
+        if (BULLETS[i].x >= ZOMBIES[j].x && BULLETS[i].x <= ZOMBIES[j].x + 20 && BULLETS[i].y >= ZOMBIES[j].y && BULLETS[i].y < +ZOMBIES[j].y + 20) {
+          ZOMBIES[j].hp -= BULLETS[i].damage;
+          bulletHitSound.play();
+          if (ZOMBIES[j].hp <= 0) {
+            var luckNum = (Math.random() * 99) + 1;
+            if (luckNum < PLAYER_CHARACTER.luck) {
+              DNA.push({
+                x: ZOMBIES[j].x,
+                y: ZOMBIES[j].y
+              });
+            }
+            ZOMBIES.splice(j, 1);
+          }
+          j--;
+
+          if (!BULLETS[i].pierces) {
+            j = ZOMBIES.length;
+            BULLETS.splice(i, 1);
+            i--;
+          }
+        }
+      }
+    }
 
 
-  //removes bullets that have gone off screen to save memory
-  for (var i = 0; i < BULLETS.length; i++) {
-    if (BULLETS[i].x < 0) {
-      BULLETS.splice(i, 1);
-      i--;
-    } else if (BULLETS[i].x > GAME.canvas.width) {
-      BULLETS.splice(i, 1);
-      i--;
-    } else if (BULLETS[i].y < 0) {
-      BULLETS.splice(i, 1);
-      i--;
-    } else if (BULLETS[i].y > GAME.canvas.height) {
-      BULLETS.splice(i, 1);
-      i--;
+
+    //removes bullets that have gone off screen to save memory
+    for (var i = 0; i < BULLETS.length; i++) {
+      if (BULLETS[i].x < 0) {
+        BULLETS.splice(i, 1);
+        i--;
+      } else if (BULLETS[i].x > GAME.canvas.width) {
+        BULLETS.splice(i, 1);
+        i--;
+      } else if (BULLETS[i].y < 0) {
+        BULLETS.splice(i, 1);
+        i--;
+      } else if (BULLETS[i].y > GAME.canvas.height) {
+        BULLETS.splice(i, 1);
+        i--;
+      }
     }
   }
-}
 
-function RenderZombies(context) {
-  //draws every zombie
-  var canvas = document.getElementById('mainCanvas');
-  var zomImage = new Image();
-  zomImage.src = 'Sprites\\zombie head.jpg';
-  for (zombie of ZOMBIES) {
-    context.drawImage(zomImage, zombie.x, zombie.y, 20, 20);
-  }
-}
-
-function RenderPC(context) {
-  var canvas = document.getElementById('mainCanvas');
-  var pcImage = new Image();
-  pcImage.src = 'Sprites\\character 1 face.png';
-  //this is where the flamethrower flames are drawn. theyre here cuz im lazy and i wanted them to be under the player and the weapon but didnt want to write another function
-  if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 3 && CONTROLS.playerCharacter.attack && aCooldown <= 0 && rCooldown <= 0 && WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip != 0) {
-    var lowerRange = PLAYER_CHARACTER.theta - (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].angle * Math.PI / 180);
-    var upperRange = PLAYER_CHARACTER.theta + (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].angle * Math.PI / 180);
-    var rand = Math.random();
-    if (rand < .2) {
-      context.fillStyle = "#FF0000";
-    } else if (rand < .4) {
-      context.fillStyle = "#FF5a00";
-    } else if (rand < .6) {
-      context.fillStyle = "#FF9a00";
-    } else if (rand < .8) {
-      context.fillStyle = "#FFce00";
-    } else {
-      context.fillStyle = "#FFe808";
+  function RenderZombies(context) {
+    //draws every zombie
+    var canvas = document.getElementById('mainCanvas');
+    var zomImage = new Image();
+    zomImage.src = 'Sprites\\zombie head.jpg';
+    for (zombie of ZOMBIES) {
+      context.drawImage(zomImage, zombie.x, zombie.y, 20, 20);
     }
-    context.beginPath()
-    context.moveTo(PLAYER_CHARACTER.x, PLAYER_CHARACTER.y);
-    context.lineTo(PLAYER_CHARACTER.x + (150 * Math.cos(lowerRange)), PLAYER_CHARACTER.y + (150 * Math.sin(lowerRange)));
-    context.arc(PLAYER_CHARACTER.x, PLAYER_CHARACTER.y, 150, lowerRange, upperRange, false);
-    context.lineTo(PLAYER_CHARACTER.x, PLAYER_CHARACTER.y);
-    context.fill();
-    context.fillStyle = "#000000";
   }
-  //this draws the player
-  drawRotatedImage(context, pcImage, PLAYER_CHARACTER.x, PLAYER_CHARACTER.y, 26, 26, PLAYER_CHARACTER.theta);
 
-}
-
-function RenderBullets(context) {
-  //draws all the bullets
-  var canvas = document.getElementById('mainCanvas');
-  for (bullet of BULLETS) {
-    context.fillRect(bullet.x, bullet.y, 2, 2);
-  }
-}
-
-function drawRotatedImage(context, image, x, y, width, height, angle) {
-  context.save();
-  context.translate(x, y);
-  context.rotate(angle);
-  context.drawImage(image, -width / 2, -height / 2, width, height);
-  context.restore();
-  //To make this function work for top left, change translate(x, y) to translate(x+width/2, y+height/2)
-  //Then, make the drawImage(image, 0, 0, width, height);
-}
-
-function RenderWeapon(context) {
-  var canvas = document.getElementById('mainCanvas');
-  var weaponImage = new Image();
-
-  //why is this where weapon switching happens? who tf knows
-  if (wSwitchCooldown <= 0 && CONTROLS.playerCharacter.pickWeapon) {
-    PLAYER_CHARACTER.wepOn++;
-    if (PLAYER_CHARACTER.wepOn == 3) {
-      PLAYER_CHARACTER.wepOn = 0;
+  function RenderPC(context) {
+    var canvas = document.getElementById('mainCanvas');
+    var pcImage = new Image();
+    pcImage.src = 'Sprites\\character 1 face.png';
+    //this is where the flamethrower flames are drawn. theyre here cuz im lazy and i wanted them to be under the player and the weapon but didnt want to write another function
+    if (PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn] == 3 && CONTROLS.playerCharacter.attack && aCooldown <= 0 && rCooldown <= 0 && WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].ammoLeftInClip != 0) {
+      var lowerRange = PLAYER_CHARACTER.theta - (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].angle * Math.PI / 180);
+      var upperRange = PLAYER_CHARACTER.theta + (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].angle * Math.PI / 180);
+      var rand = Math.random();
+      if (rand < .2) {
+        context.fillStyle = "#FF0000";
+      } else if (rand < .4) {
+        context.fillStyle = "#FF5a00";
+      } else if (rand < .6) {
+        context.fillStyle = "#FF9a00";
+      } else if (rand < .8) {
+        context.fillStyle = "#FFce00";
+      } else {
+        context.fillStyle = "#FFe808";
+      }
+      context.beginPath()
+      context.moveTo(PLAYER_CHARACTER.x, PLAYER_CHARACTER.y);
+      context.lineTo(PLAYER_CHARACTER.x + (150 * Math.cos(lowerRange)), PLAYER_CHARACTER.y + (150 * Math.sin(lowerRange)));
+      context.arc(PLAYER_CHARACTER.x, PLAYER_CHARACTER.y, 150, lowerRange, upperRange, false);
+      context.lineTo(PLAYER_CHARACTER.x, PLAYER_CHARACTER.y);
+      context.fill();
+      context.fillStyle = "#000000";
     }
-    wSwitchCooldown = 30;
-  }
-  wSwitchCooldown--;
-
-  //this part decided which weapon picture to show on the screen
-  weaponImage.src = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].image;
-  if (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].class == "melee" && aCooldown > 0) {
-    weaponImage.src = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].fimage;
+    //this draws the player
+    drawRotatedImage(context, pcImage, PLAYER_CHARACTER.x, PLAYER_CHARACTER.y, 26, 26, PLAYER_CHARACTER.theta);
 
   }
-  //draws weapon in topleft
-  context.drawImage(weaponImage, 100, 2, 15, 15);
 
-  //draws the player's weapon
+  function RenderBullets(context) {
+    //draws all the bullets
+    var canvas = document.getElementById('mainCanvas');
+    for (bullet of BULLETS) {
+      context.fillRect(bullet.x, bullet.y, 2, 2);
+    }
+  }
 
-  drawRotatedImage(context, weaponImage, PLAYER_CHARACTER.x + 15 * Math.cos(PLAYER_CHARACTER.theta), PLAYER_CHARACTER.y + 15 * Math.sin(PLAYER_CHARACTER.theta), 20, 20, PLAYER_CHARACTER.theta);
+  function drawRotatedImage(context, image, x, y, width, height, angle) {
+    context.save();
+    context.translate(x, y);
+    context.rotate(angle);
+    context.drawImage(image, -width / 2, -height / 2, width, height);
+    context.restore();
+    //To make this function work for top left, change translate(x, y) to translate(x+width/2, y+height/2)
+    //Then, make the drawImage(image, 0, 0, width, height);
+  }
 
-}
+  function RenderWeapon(context) {
+    var canvas = document.getElementById('mainCanvas');
+    var weaponImage = new Image();
 
-function RenderDNA(context) {
-  /*for (dna of DNA){
+    //why is this where weapon switching happens? who tf knows
+    if (wSwitchCooldown <= 0 && CONTROLS.playerCharacter.pickWeapon) {
+      PLAYER_CHARACTER.wepOn++;
+      if (PLAYER_CHARACTER.wepOn == 3) {
+        PLAYER_CHARACTER.wepOn = 0;
+      }
+      wSwitchCooldown = 30;
+    }
+    wSwitchCooldown--;
+
+    //this part decided which weapon picture to show on the screen
+    weaponImage.src = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].image;
+    if (WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].class == "melee" && aCooldown > 0) {
+      weaponImage.src = WEAPONS[PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn]].fimage;
+
+    }
+    //draws weapon in topleft
+    context.drawImage(weaponImage, 100, 2, 15, 15);
+
+    //draws the player's weapon
+
+    drawRotatedImage(context, weaponImage, PLAYER_CHARACTER.x + 15 * Math.cos(PLAYER_CHARACTER.theta), PLAYER_CHARACTER.y + 15 * Math.sin(PLAYER_CHARACTER.theta), 20, 20, PLAYER_CHARACTER.theta);
+
+  }
+
+  function RenderDNA(context) {
+    /*for (dna of DNA){
     context.fillRect(dna.x,dna.y,20,20);
   }*/
   var dnaImage = new Image();
@@ -510,87 +514,89 @@ function runGame() {
     context.font = "40px Arial";
     context.fillText("Zombie Smash", 135, 100);
     context.font = "14px Arial";
-    context.fillText("[W][A][S][D] to move, [LeftArrow][RightArrow] to rotate, [Space] to attack, [R] to reload, [Shift] to switch weapons", 20, 200);
-    context.fillText("(In Shop: Click to buy, click an owned weapon to equip it to the red slot. [Enter] to leave)", 20, 240);
-    context.fillText("[Space] to start", 20, 280);
+    context.fillText("[W][A][S][D] to move. [Leftclick] to attack (facing your mouse).", 20, 200);
+    context.fillText("[R] to reload, [Shift] to switch weapons", 20, 225);
+    context.fillText("(In Shop: Click to buy, click an owned weapon to equip it to the red slot. [Enter] to leave)", 20, 250);
+    context.fillText("[Leftclick] to start", 20, 280);
     if (CONTROLS.playerCharacter.attack){
       beginGame=true;
+      CONTROLS.playerCharacter.attack = false;
     }
   }else{
 
-  if (GAME.started) {
-    if ((GAME.levelTime >= 0 || ZOMBIES.length > 0 || DNA.length > 0) && PLAYER_CHARACTER.hp > 0) {
-      // 1 - Reposition the objects
-      hasntWon = true;
-      handlePCAnimation();
-      handleBulletAnimation();
-      handleZombieAnimation();
-      // 2 - Clear the CANVAS
-      context.clearRect(0, 0, 600, 300);
+    if (GAME.started) {
+      if ((GAME.levelTime >= 0 || ZOMBIES.length > 0 || DNA.length > 0) && PLAYER_CHARACTER.hp > 0) {
+        // 1 - Reposition the objects
+        hasntWon = true;
+        handlePCAnimation();
+        handleBulletAnimation();
+        handleZombieAnimation();
+        // 2 - Clear the CANVAS
+        context.clearRect(0, 0, 600, 300);
 
-      // 3 - Draw new items
-      RenderPC(context);
-      RenderWeapon(context);
-      RenderZombies(context);
-      RenderBullets(context);
-      RenderDNA(context);
-      context.font = "10px Arial";
+        // 3 - Draw new items
+        RenderPC(context);
+        RenderWeapon(context);
+        RenderZombies(context);
+        RenderBullets(context);
+        RenderDNA(context);
+        context.font = "10px Arial";
 
-      //this stuff writes all the stats in the topleft
-      if (WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].clipSize == -1) {
-        context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna, 10, 15);
-        context.fillText("∞/∞", 120, 15)
-      } else {
-        context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna , 10, 15);
-        context.fillText(WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoLeftInClip + "/" + WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoOwned, 120, 15);
+        //this stuff writes all the stats in the topleft
+        if (WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].clipSize == -1) {
+          context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna, 10, 15);
+          context.fillText("∞/∞", 120, 15)
+        } else {
+          context.fillText("HP: " + PLAYER_CHARACTER.hp + "  DNA: " + PLAYER_CHARACTER.dna , 10, 15);
+          context.fillText(WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoLeftInClip + "/" + WEAPONS[(PLAYER_CHARACTER.weapons[PLAYER_CHARACTER.wepOn])].ammoOwned, 120, 15);
 
+        }
+        context.font = "30px Arial";
+        context.fillText("Level "+GAME.level, 250, 30);
+        if (GAME.levelTime>0){
+          context.fillText(Math.trunc(GAME.levelTime/60), 550, 30);
+        }
+        else{
+          context.fillText("0", 550, 30);
+        }
+        context.font = "10px Arial";
+
+      } else if (PLAYER_CHARACTER.hp <= 0) {
+        context.font = "30px Arial";
+        context.fillText("Game Over", 135, 200);
+        if (hasntWon){
+          loseSound.play();
+          hasntWon=false;
+        }
       }
-      context.font = "30px Arial";
-      context.fillText("Level "+GAME.level, 250, 30);
-      if (GAME.levelTime>0){
-        context.fillText(Math.trunc(GAME.levelTime/60), 550, 30);
-      }
-      else{
-        context.fillText("0", 550, 30);
-      }
-      context.font = "10px Arial";
+      else {
+        if (hasntWon){
+          winSound.play();
+          hasntWon=false;
+        }
+        context.clearRect(0, 0, 600, 300)
 
-    } else if (PLAYER_CHARACTER.hp <= 0) {
-      context.font = "30px Arial";
-      context.fillText("Game Over", 135, 200);
-      if (hasntWon){
-        loseSound.play();
-        hasntWon=false;
-}
-      }
-     else {
-       if (hasntWon){
-         winSound.play();
-         hasntWon=false;
- }
-      context.clearRect(0, 0, 600, 300)
+        drawShopStuff(context);
+        context.font = "20px Arial";
+        context.fillText("DNA: " + PLAYER_CHARACTER.dna, 10, 30);
+        context.font = "10px Arial";
+        handleShopping(context);
 
-      drawShopStuff(context);
-      context.font = "20px Arial";
-      context.fillText("DNA: " + PLAYER_CHARACTER.dna, 10, 30);
-      context.font = "10px Arial";
-      handleShopping(context);
-
-      if (CONTROLS.shop.nextLevel){
-        CONTROLS.shop.nextLevel=false;
-        CONTROLS.shop.click=false;
-        GAME.level++;
-        GAME.levelTime=3600;
-        PLAYER_CHARACTER.hp=PLAYER_CHARACTER.baseHP;
-        GAME.zombiesInc= 15+ Math.trunc(Math.random()*10) + 5*GAME.level;
-        PLAYER_CHARACTER.x=300;
-        PLAYER_CHARACTER.y=150;
-        PLAYER_CHARACTER.theta=0;
+        if (CONTROLS.shop.nextLevel){
+          CONTROLS.shop.nextLevel=false;
+          CONTROLS.shop.click=false;
+          GAME.level++;
+          GAME.levelTime=3600;
+          PLAYER_CHARACTER.hp=PLAYER_CHARACTER.baseHP;
+          GAME.zombiesInc= 15+ Math.trunc(Math.random()*10) + 5*GAME.level;
+          PLAYER_CHARACTER.x=300;
+          PLAYER_CHARACTER.y=150;
+          PLAYER_CHARACTER.theta=0;
+        }
       }
+      CONTROLS.shop.click = false;
     }
-    CONTROLS.shop.click = false;
   }
-}
   window.requestAnimationFrame(runGame);
 }
 
