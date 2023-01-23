@@ -1,26 +1,9 @@
-/# zombie-smash
-IMPORTANT: If you don't open this as an actual text file, the tables will be unreadable. Hit Open Raw or Edit on github to see this file as intended.
-
-Day 1:	Create the player character (PC) represented by the given sprite, which can move and rotate.
-Day 2:	Make sure the PC has a DNA counter, as well as his 4 stats, 3 weapon slots, and an indicator of which weapon is currently being used. Make sure that a button can change with weapon is being indicated.
-Day 3:	Write the code for the weapons, which each have a class, a cooldown, a clip size, an ammo owned, an ammo left in clip, and a formula for their damage.
-Day 4:	Catch up on the first 3 days. Display the player's HP, DNAcount, ammo left in clip, and ammo owned on screen, as well as the picture of the current weapon. (see concept sketch).
-Day 5: 	Create a level variable and set it at 1 for now. Create the zombieArray, add zombies as specified on line 30 randomly over time as specified on line 97.
-Day 6:	Continue yesterday's work. Now make the zombies move towards the player. Write an attack() function which uses the PC's currently indicated weapon and performs its attack so long as the weapon isn't on cooldown and has ammo left in its clip. Decrement the health of any zombies hit by the appropriate amount.
-Day 7:	Give each weapon ammo. Have weapons not fire if they have no ammo left in clip. Create a reload key (r) that refills the clip and takes the weapon's appropriate amount of time to reload.
-Day 8:	Make the zombies hurt the player if they are touching him (and not on cooldown). Have being hit by a weapon knock a zombie back by that weapon's knockback worth of distance.
-Day 9:	Make sure that players die when their health is zero. When a zombie dies, make it have a Luck% chance to drop DNA at the location where it died (note that there are currently 2 different places in the code where it checks if a zombie has died. One in handleZombieAnimation and one in handleBulletAnimation). Make sure that when a player walks over a DNA, it disappears and his DNA count is incremented.
-Day 10: Once all zombies are dead or the player is dead, end the level. If the player is dead, the game ends. Else, if all the zombies are dead, it's time for THE SHOP.
-Day 11: Continue writing the shop, as described on line 36. Make sure a player can choose which weapons they bring with them into combat (if they have more than 3)
-Day 12: When the player clicks a button to leave the shop, increment the level count and put the player back on screen to kill some more zombies.
-Day 13(optional): Code in the Head Honcho as described on line 97.
-Day 14(optional): Finish up with all the other stuff.  Get sounds to play when weapons are used, when zombies or players are damaged, when you win, when you lose, when you buy an upgrade, and so on. All sounds that should be implemented are in the Sounds file.
-Day 15(optional): Add achievements that appear on screen when they are achieved, as described on line 99. Add the achievement sound.  
+For anyone checking this out: this is a game project I worked on in high school. Forgive some of the hack job that is the codebase, I was young and working off a template that I didn't understand. However, overall I think it works surprisingly well! If you want to try it out, you can do so at https://zombiesmash-ae858.web.app/
 
 
 
+Game Design Specification below:
 
-Design a game project, working title Zombie Smash.
 In this game, you are an expert zombie hunter who is killing vast numbers of zombies. There will be several levels where wave after wave of zombies appear around you. The game has a top-down view with WASD controls to move, Q and E to rotate, and the spacebar to attack. The game can be played as multiplayer, in which case a second character will be on screen. The screen will not be split. The second character uses arrowkey controls to move, , and . to rotate, and option or COMMAND to attack. If players are playing multiplayer, spawn twice as many zombies per level and average the luck stats of the two players to determine the drop rate. If a player dies, they cannot play for the rest of the level. If all players die, the players lose the game. If there are two players, they CAN damage each other. The game should have all its essential data saved in a cookie so you can pick up where you left off if you close your browser.
 
 Killing zombies has a chance to drop DNA. In between levels, there will be an upgrade screen in which various character traits can be upgraded by doing research spending zombie DNA. The traits are as follows: Strength (defines a damage multiplier, starts at 1. DEFINE A METER AS THE DISTANCE IT TAKES A CHARACTER WITH SPEED 1 CAN MOVE IN 1 SECOND), Speed(defines a move speed, starts at 1), HP (defines how many times you can be hit, starts at 100), and Luck (%chance for zombies drop DNA, starts at 10). A character also has a weapon. A weapon determines how much damage a character does. A character’s starting weapon is a club  (melee) , which deals 20*STR damage in a cone in front of player with radius 1 and angle 90°, knocks back all zombies hit,  and has a 1 second cooldown. Character has 3 weapon slots. They can cycle through them by pressing TAB. Player 2 can cycle between their weapons by pressing ENTER. The player’s current weapon, the amount of ammo it has, the amount of clips they have for it, their HP, and the amount of DNA they have should be displayed in the corner of the screen. A weapon which does not require ammo is assumed to have infinite ammo.
